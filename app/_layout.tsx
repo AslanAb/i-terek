@@ -1,32 +1,30 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useFonts } from "expo-font";
+import { Stack, router } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { MMKV, useMMKVString } from "react-native-mmkv";
+import BackgroundImage from "@/components/BackgroundImage";
+import { Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
+import * as SystemUI from "expo-system-ui";
 
-import { useColorScheme } from '@/components/useColorScheme';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: "(tabs)",
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
+    "Podkova-Regular": require("@/assets/fonts/Podkova_400Regular.ttf"),
+    "Podkova-Medium": require("@/assets/fonts/Podkova_500Medium.ttf"),
+    "Podkova-SemiBold": require("@/assets/fonts/Podkova_600SemiBold.ttf"),
+    "Podkova-Bold": require("@/assets/fonts/Podkova_700Bold.ttf"),
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -44,15 +42,52 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+SystemUI.setBackgroundColorAsync("black");
+
+export const storage = new MMKV();
+
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  const [theme, setTheme] = useMMKVString("theme");
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <SafeAreaProvider>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="index" options={{ headerShown: false, contentStyle: { backgroundColor: "transparent" } }} />
+        <Stack.Screen
+          name="details"
+          options={{
+            headerTransparent: true,
+            headerTintColor: "white",
+            headerTitle: " ",
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => router.push("/settings")}
+                hitSlop={{
+                  top: 30,
+                  right: 30,
+                  bottom: 30,
+                  left: 30,
+                }}
+              >
+                <Ionicons name="settings-sharp" size={24} color="white" />
+              </TouchableOpacity>
+            ),
+            animation: "slide_from_bottom",
+            contentStyle: { backgroundColor: "transparent" },
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{
+            headerTransparent: true,
+            headerTintColor: "white",
+            headerTitle: " ",
+            animation: "slide_from_right",
+            contentStyle: { backgroundColor: "transparent" },
+          }}
+        />
       </Stack>
-    </ThemeProvider>
+      {theme && <BackgroundImage theme={theme} />}
+    </SafeAreaProvider>
   );
 }
