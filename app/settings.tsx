@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Dimensions, TextInput } from "react-native";
+import { View, Text, ScrollView, Dimensions, TextInput, Pressable } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { ScaledSheet, scale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,19 +7,30 @@ import { useMMKVString } from "react-native-mmkv";
 import InputCard from "@/components/InputCard";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Input2Card from "@/components/Input2Card";
-
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 const { width, height } = Dimensions.get("window");
 
 export default function Settings() {
   const [theme, setTheme] = useMMKVString("theme");
 
   const scrollViewRef = useRef<ScrollView>(null);
+  const [pagePosition, setPagePosition] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const handleScroll = (event: any) => {
     const position = event.nativeEvent.contentOffset.x;
+    setPagePosition(position);
     const currentPage = Math.round(position / width);
     setScrollPosition(currentPage);
+  };
+
+  const handleScrollLeft = () => {
+    scrollViewRef.current?.scrollTo({ x: pagePosition - width, animated: true });
+  };
+
+  const handleScrollRight = () => {
+    scrollViewRef.current?.scrollTo({ x: pagePosition + width, animated: true });
   };
 
   return (
@@ -44,19 +55,19 @@ export default function Settings() {
         {[0, 1, 2].map((i) => (
           <View key={i} style={{ justifyContent: "center" }}>
             <ElevationCard theme={theme} transparency={1}>
-              <Text
-                style={[
-                  styles.font22,
-                  { padding: scrollPosition === i ? 10 : 5, lineHeight: scrollPosition === i ? undefined : 0 },
-                ]}
-              >
-                {scrollPosition === i
-                  ? i === 0
-                    ? "Вес показателей"
-                    : i === 1
-                    ? "Норм. значения"
-                    : "Экстремумы"
-                  : "   "}
+              <Text style={[styles.font22, { padding: 10, alignItems: "center", justifyContent: "center" }]}>
+                {scrollPosition === i ? (i === 0 ? "Вес показателей" : i === 1 ? "Норм. значения" : "Экстремумы") : ""}
+                {scrollPosition !== i ? (
+                  i < scrollPosition ? (
+                    <Pressable onPress={handleScrollLeft} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                      <AntDesign name="left" size={scale(15)} color="white" />
+                    </Pressable>
+                  ) : (
+                    <Pressable onPress={handleScrollRight} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                      <AntDesign name="right" size={scale(15)} color="white" />
+                    </Pressable>
+                  )
+                ) : null}
               </Text>
             </ElevationCard>
           </View>
@@ -73,7 +84,7 @@ export default function Settings() {
           style={{ minHeight: height }}
         >
           <View style={styles.box}>
-            <InputCard theme={theme} name="pressure" h={90}/>
+            <InputCard theme={theme} name="pressure" h={90} />
             <InputCard theme={theme} name="pressure's changing" h={90} />
             <InputCard theme={theme} name="solar activity" h={90} />
             <InputCard theme={theme} name="magnetic field" h={90} />

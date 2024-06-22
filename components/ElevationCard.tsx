@@ -54,7 +54,9 @@ export default function ElevationCard(props: {
                 ? ["#bdef7c", "#477304"]
                 : props.theme === "yellow"
                 ? ["#EC9704", "#9C4A1A"]
-                : ["#e85d04", "#9d0208"]
+                : props.theme === "red"
+                ? ["#e85d04", "#9d0208"]
+                : ["transparent", "transparent"]
             }
             locations={[0.1, 1]}
             start={{ x: 0.4, y: -0.6 }}
@@ -88,7 +90,9 @@ export default function ElevationCard(props: {
               ? `rgba(71, 115, 4, ${props.transparency ? props.transparency : 0.7})`
               : props.theme === "yellow"
               ? `rgba(156, 74, 26, ${props.transparency ? props.transparency : 0.7})`
-              : `rgba(157, 2, 8, ${props.transparency ? props.transparency : 0.7})`,
+              : props.theme === "red"
+              ? `rgba(157, 2, 8, ${props.transparency ? props.transparency : 0.7})`
+              : "transparent",
             zIndex: 1,
           }}
         >

@@ -7,13 +7,10 @@ import { MMKV, useMMKVString } from "react-native-mmkv";
 import BackgroundImage from "@/components/BackgroundImage";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
-import * as SystemUI from "expo-system-ui";
+import Spinner from "react-native-loading-spinner-overlay";
+import { scale } from "react-native-size-matters";
 
 export { ErrorBoundary } from "expo-router";
-
-export const unstable_settings = {
-  initialRouteName: "(tabs)",
-};
 
 SplashScreen.preventAutoHideAsync();
 
@@ -41,8 +38,6 @@ export default function RootLayout() {
 
   return <RootLayoutNav />;
 }
-
-SystemUI.setBackgroundColorAsync("black");
 
 export const storage = new MMKV();
 
@@ -87,7 +82,13 @@ function RootLayoutNav() {
           }}
         />
       </Stack>
-      {theme && <BackgroundImage theme={theme} />}
+      <BackgroundImage theme={theme} />
+      <Spinner
+        visible={theme ? false : true}
+        // cancelable
+        textContent={"Загрузка..."}
+        textStyle={{ textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) }}
+      />
     </SafeAreaProvider>
   );
 }

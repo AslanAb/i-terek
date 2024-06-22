@@ -13,17 +13,27 @@ export default function Input2Card(props: {
   return (
     <ElevationCard theme={props.theme} p={15} w={"100%"} transparency={1} h={props.h} gradient>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        {props.name === "pressure" && <FontAwesome6 name="tent-arrows-down" size={scale(16)} color="white" style={{ flex: 1 }}/>}
-        {props.name === "pressure's changing" && <Feather name="trending-up" size={scale(24)} color="white" style={{ flex: 1 }}/>}
+        {props.name === "pressure" && (
+          <FontAwesome6 name="tent-arrows-down" size={scale(16)} color="white" style={{ flex: 1 }} />
+        )}
+        {props.name === "pressure's changing" && (
+          <Feather name="trending-up" size={scale(24)} color="white" style={{ flex: 1 }} />
+        )}
         {props.name === "solar activity" && (
-          <MaterialCommunityIcons name="sun-wireless-outline" size={scale(30)} color="white" style={{ flex: 1 }}/>
+          <MaterialCommunityIcons name="sun-wireless-outline" size={scale(30)} color="white" style={{ flex: 1 }} />
         )}
-        {props.name === "magnetic field" && <Ionicons name="magnet-sharp" size={scale(30)} color="white" style={{ flex: 1 }}/>}
+        {props.name === "magnetic field" && (
+          <Ionicons name="magnet-sharp" size={scale(30)} color="white" style={{ flex: 1 }} />
+        )}
         {props.name === "temperature" && (
-          <FontAwesome6 name="temperature-three-quarters" size={scale(30)} color="white" style={{ flex: 1 }}/>
+          <FontAwesome6 name="temperature-three-quarters" size={scale(30)} color="white" style={{ flex: 1 }} />
         )}
-        {props.name === "air pollution" && <MaterialIcons name="masks" size={scale(35)} color="white" style={{ flex: 1 }}/>}
-        {props.name === "wind speed" && <MaterialCommunityIcons name="weather-windy" size={scale(30)} color="white" style={{ flex: 1 }}/>}
+        {props.name === "air pollution" && (
+          <MaterialIcons name="masks" size={scale(35)} color="white" style={{ flex: 1 }} />
+        )}
+        {props.name === "wind speed" && (
+          <MaterialCommunityIcons name="weather-windy" size={scale(30)} color="white" style={{ flex: 1 }} />
+        )}
         <Text
           style={{ flex: 4, textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(16) }}
         >
@@ -42,7 +52,9 @@ export default function Input2Card(props: {
                 ? "rgb(33, 37, 23)"
                 : props.theme === "yellow"
                 ? "#582f0e"
-                : "#370617",
+                : props.theme === "red"
+                ? "#370617"
+                : "blue",
             flex: 2,
             padding: 5,
             borderRadius: 10,
@@ -61,7 +73,9 @@ export default function Input2Card(props: {
                   ? "rgb(33, 37, 23)"
                   : props.theme === "yellow"
                   ? "#582f0e"
-                  : "#370617",
+                  : props.theme === "red"
+                  ? "#370617"
+                  : "blue",
               flex: 2,
               padding: 5,
               borderRadius: 10,

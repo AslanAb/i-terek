@@ -4,7 +4,7 @@ import { scale } from "react-native-size-matters";
 import ElevationCard from "./ElevationCard";
 import { IDetailsText } from "@/constants/text";
 
-export default function InputCard(props: { theme: string | undefined; name: IDetailsText["name"], h?: number }) {
+export default function InputCard(props: { theme: string | undefined; name: IDetailsText["name"]; h?: number }) {
   return (
     <ElevationCard theme={props.theme} p={15} w={"100%"} transparency={1} h={props.h} gradient>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -47,7 +47,9 @@ export default function InputCard(props: { theme: string | undefined; name: IDet
                 ? "rgb(33, 37, 23)"
                 : props.theme === "yellow"
                 ? "#582f0e"
-                : "#370617",
+                : props.theme === "red"
+                ? "#370617"
+                : "blue",
             flex: 2,
             padding: 5,
             borderRadius: 10,

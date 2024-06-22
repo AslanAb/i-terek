@@ -29,7 +29,16 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router", "expo-secure-store"],
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(i-terek) to use your location."
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     },
