@@ -9,7 +9,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import { scale } from "react-native-size-matters";
-
 export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
@@ -92,3 +91,4 @@ function RootLayoutNav() {
     </SafeAreaProvider>
   );
 }
+

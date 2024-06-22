@@ -3,14 +3,16 @@ import { ScaledSheet, scale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { detailsText, IDetailsText } from "@/constants/text";
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather, FontAwesome6 } from "@expo/vector-icons";
-import { useMMKVString } from "react-native-mmkv";
+import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ShadowCard from "@/components/ShadowCard";
 import ElevationCard from "@/components/ElevationCard";
 import { useState } from "react";
+import { IWeather } from "@/types";
 
 export default function Details() {
   const [theme, setTheme] = useMMKVString("theme");
   const [details, setDetails] = useState<IDetailsText>(detailsText[0]);
+  const [weather, setWeather] = useMMKVObject<IWeather>("weather");
 
   const detailsHandler = (name: IDetailsText["name"]) => {
     const selectedDetails = detailsText.find((item) => item.name === name);
@@ -82,7 +84,7 @@ export default function Details() {
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end", flex: 1, gap: 5 }}>
               <Text style={styles.font14}>мм. рт. ст.</Text>
-              <Text style={styles.font22}>1000</Text>
+              <Text style={styles.font22}>{weather?.pressure}</Text>
             </View>
           </ElevationCard>
           <ElevationCard
@@ -150,7 +152,7 @@ export default function Details() {
               <FontAwesome6 name="temperature-three-quarters" size={scale(30)} color="white" />
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end", flex: 1, gap: 5 }}>
-              <Text style={styles.font22}>-7.94 ℃</Text>
+              <Text style={styles.font22}>{weather?.temp} ℃</Text>
             </View>
           </ElevationCard>
         </View>
@@ -186,7 +188,7 @@ export default function Details() {
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end", flex: 1, gap: 5 }}>
               <Text style={styles.font14}>м/с</Text>
-              <Text style={styles.font22}>10</Text>
+              <Text style={styles.font22}>{weather?.wind}</Text>
             </View>
           </ElevationCard>
         </View>
