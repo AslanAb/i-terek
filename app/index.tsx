@@ -7,24 +7,21 @@ import ElevationCard from "@/components/ElevationCard";
 import { useEffect, useState } from "react";
 import { countryNameByISOCodes } from "@/constants/country_name_by_iso_codes";
 import { getCity, getCurrentLocation } from "@/services/location";
-import { months } from "@/constants/months";
-import {
-  getCurrentWeather,
-  getCurrentWeatherOneCall,
-  getWeatherForecast5day3hour,
-  getWeatherFronOpenWeather,
-} from "@/services/wheather";
-import { IWeather } from "@/types";
+import { IWeather, IWeightOfVariables } from "@/types";
+import { checkAndSetNormals, checkAndSetVariables, getDate, getWeatherAllIn } from "@/utils";
 
 export default function Home() {
   const [theme, setTheme] = useMMKVString("theme");
   const [weather, setWeather] = useMMKVObject<IWeather>("weather");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [latAndLong, setLatAndLong] = useState<{
     latitude: number;
     longitude: number;
   }>();
+  checkAndSetVariables();
+  checkAndSetNormals();
   const changeTheme = () => {
     if (theme === "green") {
       setTheme("yellow");
@@ -45,12 +42,23 @@ export default function Home() {
         if (location instanceof Error) {
           throw new Error("Can't get location");
         }
-        const cityAndCounrty = await getCity(
-          location.latitude,
-          location.longitude
-        );
+        const cityAndCounrty = await getCity(location.latitude, location.longitude);
         if (cityAndCounrty instanceof Error) {
           throw new Error("Can't get city and country");
+        }
+
+        if (weather) {
+          const dtDate: Date = new Date(weather.dt * 1000);
+          const currentTime: Date = new Date();
+          const differenceInMinutes: number = (currentTime.getTime() - dtDate.getTime()) / (1000 * 60);
+
+          if (differenceInMinutes >= 60) {
+            const weatherData = await getWeatherAllIn(location.latitude, location.longitude);
+            setWeather(weatherData);
+          }
+        } else {
+          const weatherData = await getWeatherAllIn(location.latitude, location.longitude);
+          setWeather(weatherData);
         }
         setLatAndLong(location);
         setCity(cityAndCounrty.city);
@@ -61,42 +69,7 @@ export default function Home() {
     })();
   }, []);
 
-  useEffect(() => {
-    if (latAndLong) {
-      (async () => {
-        try {
-          if (!latAndLong) {
-            throw new Error("Can't get location");
-          }
-          const currentWeatherAll = await getCurrentWeather(
-            latAndLong.latitude,
-            latAndLong.longitude
-          );
-
-          const weatherForecast = await getWeatherForecast5day3hour(
-            latAndLong.latitude,
-            latAndLong.longitude
-          );
-
-          const currentWeather: IWeather = {
-            temp: currentWeatherAll.main.temp.toFixed(0),
-            pressure: (weatherForecast.list[0].main.grnd_level / 1.333).toFixed(
-              0
-            ),
-            wind: currentWeatherAll.wind.speed,
-          };
-          setWeather(currentWeather);
-        } catch (error) {
-          console.error("  --->", error);
-        }
-      })();
-    }
-  }, [latAndLong]);
-
-  const date = new Date();
-  const formattedDate = `${date.getDate()} ${
-    months[date.getMonth()]
-  } ${date.getFullYear()} года`;
+  const formattedDate = getDate();
 
   return (
     <SafeAreaView

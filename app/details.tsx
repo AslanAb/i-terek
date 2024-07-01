@@ -101,7 +101,7 @@ export default function Details() {
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end", flex: 1, gap: 5 }}>
               <Text style={styles.font14}>за 3 ч.</Text>
-              <Text style={styles.font22}>-2</Text>
+              <Text style={styles.font22}>{weather?.pressureChangingIn3Hours}</Text>
             </View>
           </ElevationCard>
         </View>
@@ -119,7 +119,7 @@ export default function Details() {
               <MaterialCommunityIcons name="sun-wireless-outline" size={scale(30)} color="white" />
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end", flex: 1, gap: 5 }}>
-              <Text style={styles.font22}>B4.9</Text>
+              <Text style={styles.font22}>{weather?.solar_activity}</Text>
             </View>
           </ElevationCard>
           <ElevationCard
@@ -136,7 +136,7 @@ export default function Details() {
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end", flex: 1, gap: 5 }}>
               <Text style={styles.font14}>КР-i</Text>
-              <Text style={styles.font22}>3,33</Text>
+              <Text style={styles.font22}>{weather?.kp_index}</Text>
             </View>
           </ElevationCard>
           <ElevationCard
@@ -171,7 +171,7 @@ export default function Details() {
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end", flex: 1, gap: 5 }}>
               <Text style={styles.font14}>мкг/м3</Text>
-              <Text style={styles.font22}>1,03</Text>
+              <Text style={styles.font22}>{weather?.pm2_5}</Text>
             </View>
           </ElevationCard>
           <ElevationCard

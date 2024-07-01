@@ -3,8 +3,26 @@ import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather, FontAwesome6 
 import { scale } from "react-native-size-matters";
 import ElevationCard from "./ElevationCard";
 import { IDetailsText } from "@/constants/text";
+import { IWeightOfVariables } from "@/types";
 
-export default function InputCard(props: { theme: string | undefined; name: IDetailsText["name"]; h?: number }) {
+export default function InputCard(props: {
+  theme: string | undefined;
+  name: IDetailsText["name"];
+  h?: number;
+  value: number | undefined;
+  setVariables: any;
+  variableKey: string;
+}) {
+  const changeVariables = (value: any) => {
+    let newValue = +value;
+    if (isNaN(value) || value === undefined || value < 0) {
+      newValue = 0;
+    } else if (value > 10) {
+      newValue = 10;
+    }
+    props.setVariables((prev: IWeightOfVariables) => ({ ...prev, [props.variableKey]: newValue }));
+  };
+
   return (
     <ElevationCard theme={props.theme} p={15} w={"100%"} transparency={1} h={props.h} gradient>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -41,6 +59,9 @@ export default function InputCard(props: { theme: string | undefined; name: IDet
           {props.name === "wind speed" && "Скорость ветра"}
         </Text>
         <TextInput
+          value={props.value?.toString()}
+          onChangeText={changeVariables}
+          keyboardType="numeric"
           style={{
             backgroundColor:
               props.theme === "green"

@@ -3,13 +3,45 @@ import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather, FontAwesome6 
 import { scale } from "react-native-size-matters";
 import ElevationCard from "./ElevationCard";
 import { IDetailsText } from "@/constants/text";
+import { INormals } from "@/types";
 
 export default function Input2Card(props: {
   theme: string | undefined;
   name: IDetailsText["name"];
   h?: number;
   secondInput?: boolean;
+  value: { from: number; to: number } | undefined;
+  setValue: any;
+  keyName: string;
 }) {
+  const changeNormalsFrom = (text: string) => {
+    let newValue = +text;
+    if (isNaN(newValue) || newValue === undefined) {
+      newValue = 0;
+    }
+    props.setValue((prev: INormals) => ({
+      ...prev,
+      [props.keyName]: {
+        from: newValue,
+        to: props.value?.to,
+      },
+    }));
+  };
+
+  const changeNormalsTo = (text: string) => {
+    let newValue = +text;
+    if (isNaN(newValue) || newValue === undefined) {
+      newValue = 0;
+    }
+    props.setValue((prev: INormals) => ({
+      ...prev,
+      [props.keyName]: {
+        from: props.value?.from,
+        to: newValue,
+      },
+    }));
+  };
+
   return (
     <ElevationCard theme={props.theme} p={15} w={"100%"} transparency={1} h={props.h} gradient>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
@@ -46,6 +78,9 @@ export default function Input2Card(props: {
           {props.name === "wind speed" && "Скорость ветра"}
         </Text>
         <TextInput
+          value={props.value?.from.toString()}
+          onChangeText={changeNormalsFrom}
+          keyboardType="numeric"
           style={{
             backgroundColor:
               props.theme === "green"
@@ -67,6 +102,9 @@ export default function Input2Card(props: {
         />
         {props.secondInput && (
           <TextInput
+            value={props.value?.to.toString()}
+            onChangeText={changeNormalsTo}
+            keyboardType="numeric"
             style={{
               backgroundColor:
                 props.theme === "green"
