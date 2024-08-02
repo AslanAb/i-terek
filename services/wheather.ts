@@ -1,14 +1,15 @@
+import Config from "@/Config";
 import axios from "axios";
 
 const getCurrentWeather = async (latitude: number, longitude: number) => {
   const params = {
     lat: latitude,
     lon: longitude,
-    appid: process.env.EXPO_PUBLIC_APPID,
+    appid: Config.apiKey,
     units: "metric",
   };
 
-  const response = await axios.get(process.env.EXPO_PUBLIC_URL + "/data/2.5/weather", { params });
+  const response = await axios.get(Config.mainUrl + "/data/2.5/weather", { params });
   if (response.status !== 200) {
     return new Error("Can't get current weather");
   }
@@ -20,12 +21,12 @@ const getWeatherForecast5day3hour = async (latitude: number, longitude: number) 
   const params = {
     lat: latitude,
     lon: longitude,
-    appid: process.env.EXPO_PUBLIC_APPID,
+    appid: Config.apiKey,
     units: "metric",
     cnt: 1,
   };
 
-  const response = await axios.get(process.env.EXPO_PUBLIC_URL + "/data/2.5/forecast", { params });
+  const response = await axios.get(Config.mainUrl + "/data/2.5/forecast", { params });
   if (response.status !== 200) {
     return new Error("Can't get weather forecast");
   }
@@ -37,11 +38,11 @@ const getCurrentWeatherOneCall = async (latitude: number, longitude: number) => 
   const params = {
     lat: latitude,
     lon: longitude,
-    appid: process.env.EXPO_PUBLIC_APPID,
+    appid: Config.apiKey,
     units: "metric",
   };
 
-  const response = await axios.get(process.env.EXPO_PUBLIC_URL + "/data/3.0/onecall", { params });
+  const response = await axios.get(Config.mainUrl + "/data/3.0/onecall", { params });
   if (response.status !== 200) {
     return new Error("Can't get current weather");
   }
@@ -53,12 +54,12 @@ const getCurrentWeatherOneCallTimestamp = async (latitude: number, longitude: nu
   const params = {
     lat: latitude,
     lon: longitude,
-    appid: process.env.EXPO_PUBLIC_APPID,
+    appid: Config.apiKey,
     units: "metric",
     dt: time,
   };
 
-  const response = await axios.get(process.env.EXPO_PUBLIC_URL + "/data/3.0/onecall/timemachine", { params });
+  const response = await axios.get(Config.mainUrl + "/data/3.0/onecall/timemachine", { params });
   if (response.status !== 200) {
     return new Error("Can't get current weather");
   }
@@ -69,12 +70,12 @@ const getCurrentWeatherOneCallTimestamp = async (latitude: number, longitude: nu
 const tomorrow = async (location: string, timesteps: string) => {
   const params = {
     location: location,
-    apikey: process.env.EXPO_PUBLIC_API_KEY_TOMORROW,
+    apikey: Config.tomorrowApiKey,
     units: "metric",
     timesteps: timesteps,
   };
 
-  const response = await axios.get("https://api.tomorrow.io/v4/weather/history/recent", { params });
+  const response = await axios.get(Config.tomorrowUrl + "/v4/weather/history/recent", { params });
   if (response.status !== 200) {
     return new Error("Can't get current weather");
   }
@@ -86,11 +87,11 @@ const getAirPolution = async (latitude: number, longitude: number) => {
   const params = {
     lat: latitude,
     lon: longitude,
-    appid: process.env.EXPO_PUBLIC_APPID,
+    appid: Config.apiKey,
     units: "metric",
   };
 
-  const response = await axios.get(process.env.EXPO_PUBLIC_URL + "/data/2.5/air_pollution", { params });
+  const response = await axios.get(Config.mainUrl + "/data/2.5/air_pollution", { params });
   if (response.status !== 200) {
     return new Error("Can't get current weather");
   }
@@ -124,5 +125,5 @@ export {
   tomorrow,
   getAirPolution,
   getKPIndex,
-  getSolarActivity
+  getSolarActivity,
 };

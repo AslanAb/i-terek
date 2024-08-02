@@ -1,5 +1,7 @@
 import axios from "axios";
 import * as Location from "expo-location";
+import Config from "@/Config";
+console.log('Config: ', Config.mainUrl);
 
 const getCurrentLocation = async () => {
   let { status } = await Location.requestForegroundPermissionsAsync();
@@ -17,12 +19,12 @@ const getCity = async (latitude: number, longitude: number) => {
   const params = {
     lat: latitude,
     lon: longitude,
-    appid: process.env.EXPO_PUBLIC_APPID,
+    appid: Config.apiKey,
     limit: 5,
   };
 
   const response = await axios.get(
-    process.env.EXPO_PUBLIC_URL + "/geo/1.0/reverse",
+    Config.mainUrl + "/geo/1.0/reverse",
     { params }
   );
   if (response.status !== 200) {
