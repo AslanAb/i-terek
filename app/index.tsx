@@ -6,70 +6,47 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useEffect, useState } from "react";
 import { countryNameByISOCodes } from "@/constants/country_name_by_iso_codes";
-import { getCity, getCurrentLocation } from "@/services/location";
-import { IWeather, IWeightOfVariables } from "@/types";
-import { checkAndSetNormals, checkAndSetVariables, getDate, getWeatherAllIn } from "@/utils";
+import { ILocation, IWeather } from "@/types";
+import { changeTheme, getDate } from "@/utils";
+import { useLocation } from "@/hooks/location";
+import { setDefaultSettings } from "@/services/settings";
+import { getAndSetWeather } from "@/hooks/weather";
 
 export default function Home() {
-  const [theme, setTheme] = useMMKVString("theme");
-  const [weather, setWeather] = useMMKVObject<IWeather>("weather");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [latAndLong, setLatAndLong] = useState<{
-    latitude: number;
-    longitude: number;
-  }>();
-  checkAndSetVariables();
-  checkAndSetNormals();
-  const changeTheme = () => {
-    if (theme === "green") {
-      setTheme("yellow");
-    } else if (theme === "yellow") {
-      setTheme("red");
-    } else if (theme === "red") {
-      setTheme("green");
-    } else {
-      setTheme("green");
-    }
-    console.log("changeTheme");
-  };
+  // const [latAndLong, setLatAndLong] = useState<ILocation>({
+  //   latitude: 51.509865,
+  //   longitude: -0.118092,
+  // });
+  const [theme, setTheme] = useMMKVString("theme");
+  const [weather, setWeather] = useMMKVObject<IWeather>("weather");
 
   useEffect(() => {
     (async () => {
-      try {
-        const location = await getCurrentLocation();
-        if (location instanceof Error) {
-          throw new Error("Can't get location");
-        }
-        const cityAndCounrty = await getCity(location.latitude, location.longitude);
-        if (cityAndCounrty instanceof Error) {
-          throw new Error("Can't get city and country");
-        }
-
-        if (weather) {
-          const dtDate: Date = new Date(weather.dt * 1000);
-          const currentTime: Date = new Date();
-          const differenceInMinutes: number = (currentTime.getTime() - dtDate.getTime()) / (1000 * 60);
-
-          if (differenceInMinutes >= 60) {
-            const weatherData = await getWeatherAllIn(location.latitude, location.longitude);
-            setWeather(weatherData);
-          }
-        } else {
-          const weatherData = await getWeatherAllIn(location.latitude, location.longitude);
-          setWeather(weatherData);
-        }
-        setLatAndLong(location);
-        setCity(cityAndCounrty.city);
-        setCountry(countryNameByISOCodes(cityAndCounrty.country));
-      } catch (error) {
-        console.error("🚨error --->", error);
+      let latAndLong: ILocation;
+      const locationData = await useLocation();
+      if (locationData instanceof Error) {
+        latAndLong = {
+          latitude: 51.509865,
+          longitude: -0.118092,
+        };
+        setCity("Лондон");
+        setCountry(countryNameByISOCodes("Англия"));
+      } else {
+        latAndLong = locationData.location;
+        setCity(locationData.cityAndCounrty.city);
+        setCountry(countryNameByISOCodes(locationData.cityAndCounrty.country));
       }
+
+      getAndSetWeather(latAndLong, weather, setWeather)
     })();
   }, []);
 
   const formattedDate = getDate();
+  console.log('formattedDate: ', formattedDate);
+  setDefaultSettings();
 
   return (
     <SafeAreaView
@@ -88,7 +65,7 @@ export default function Home() {
         }}
       >
         <Text
-          onPress={changeTheme}
+          onPress={() => changeTheme(theme, setTheme)}
           style={{
             color: "white",
             fontFamily: "Podkova-Medium",

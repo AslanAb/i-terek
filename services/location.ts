@@ -1,7 +1,6 @@
 import axios from "axios";
 import * as Location from "expo-location";
-import Config from "@/Config";
-console.log('Config: ', Config.mainUrl);
+import { API } from "@/api";
 
 const getCurrentLocation = async () => {
   let { status } = await Location.requestForegroundPermissionsAsync();
@@ -19,14 +18,11 @@ const getCity = async (latitude: number, longitude: number) => {
   const params = {
     lat: latitude,
     lon: longitude,
-    appid: Config.apiKey,
+    appid: API.openweathermapAppid,
     limit: 5,
   };
 
-  const response = await axios.get(
-    Config.mainUrl + "/geo/1.0/reverse",
-    { params }
-  );
+  const response = await axios.get(API.openweathermapUrl + "/geo/1.0/reverse", { params });
   if (response.status !== 200) {
     return new Error("Can't get city");
   }

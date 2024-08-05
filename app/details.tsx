@@ -4,7 +4,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { detailsText, IDetailsText } from "@/constants/text";
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather, FontAwesome6 } from "@expo/vector-icons";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
-import ShadowCard from "@/components/ShadowCard";
 import ElevationCard from "@/components/ElevationCard";
 import { useState } from "react";
 import { IWeather } from "@/types";

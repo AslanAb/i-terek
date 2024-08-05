@@ -1,7 +1,21 @@
 import { months } from "@/constants/months";
-import { getAirPolution, getCurrentWeather, getKPIndex, getSolarActivity, tomorrow } from "@/services/wheather";
+import { defaultNormals, defaultVariables } from "@/constants/settings";
+import { getAirPolution, getKPIndex, getSolarActivity, tomorrow } from "@/services/wheather";
 import { INormals, IWeather, IWeightOfVariables } from "@/types";
-import { useMMKVObject } from "react-native-mmkv";
+import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+
+const changeTheme = (theme: any, setTheme: any) => {
+  if (theme === "green") {
+    setTheme("yellow");
+  } else if (theme === "yellow") {
+    setTheme("red");
+  } else if (theme === "red") {
+    setTheme("green");
+  } else {
+    setTheme("green");
+  }
+  console.log("changeTheme");
+};
 
 const getDate = () => {
   const date = new Date();
@@ -28,98 +42,4 @@ const solarFlareToIntensity = (flareClass: any) => {
   return basePower * numberPart;
 };
 
-const getWeatherAllIn = async (latitude: number, longitude: number) => {
-  try {
-    const currentWeatherAll = await getCurrentWeather(latitude, longitude);
-
-    const weatherTomorror = await tomorrow(`${latitude}, ${longitude}`, "1h");
-
-    const pressure = (
-      weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 1].values.pressureSurfaceLevel / 1.333
-    ).toFixed(0);
-
-    const pressure3HoursBefore = (
-      weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 4].values.pressureSurfaceLevel / 1.333
-    ).toFixed(0);
-
-    const airPolution = await getAirPolution(latitude, longitude);
-
-    const kp_index = await getKPIndex();
-
-    const solarActivity = await getSolarActivity();
-    const solarActivityInWtM2 = solarFlareToIntensity(solarActivity[0].current_class);
-
-    const currentWeather: IWeather = {
-      temp: currentWeatherAll.main.temp.toFixed(0),
-      pressure: pressure,
-      pressureChangingIn3Hours: +pressure - +pressure3HoursBefore,
-      wind: currentWeatherAll.wind.speed.toFixed(0),
-      dt: currentWeatherAll.dt,
-      pm2_5: airPolution.list[0].components.pm2_5,
-      kp_index: kp_index[kp_index.length - 1][1],
-      solar_activity: solarActivity[0].current_class,
-    };
-    return currentWeather;
-  } catch (error) {
-    console.error("  --->", error);
-  }
-};
-
-export const defaultVariables: IWeightOfVariables = {
-  temp: 10,
-  pressure: 10,
-  pressureChangingIn3Hours: 10,
-  wind: 10,
-  pm2_5: 10,
-  kp_index: 10,
-  solar_activity: 10,
-};
-
-const checkAndSetVariables = () => {
-  const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
-
-  if (!weightOfVariables) {
-    setWeightOfVariables(defaultVariables);
-  }
-};
-
-export const defaultNormals: INormals = {
-  temp: {
-    from: -10,
-    to: 25,
-  },
-  pressure: {
-    from: 720,
-    to: 730,
-  },
-  pressureChangingIn3Hours: {
-    from: -5,
-    to: 5,
-  },
-  wind: {
-    from: 0,
-    to: 10,
-  },
-  pm2_5: {
-    from: 0,
-    to: 10,
-  },
-  kp_index: {
-    from: 0,
-    to: 3,
-  },
-  solar_activity: {
-    from: 1e-7,
-    to: 1e-6,
-  },
-};
-
-const checkAndSetNormals = () => {
-  const [normals, setNormals] = useMMKVObject<INormals>("normals");
-
-  if (!normals) {
-    setNormals(defaultNormals);
-  }
-};
-
-export { getDate, getWeatherAllIn, checkAndSetVariables, checkAndSetNormals };
+export { changeTheme, getDate, solarFlareToIntensity };

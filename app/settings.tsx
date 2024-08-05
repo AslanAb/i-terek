@@ -7,10 +7,9 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import InputCard from "@/components/InputCard";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Input2Card from "@/components/Input2Card";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { INormals, IWeightOfVariables } from "@/types";
-import { checkAndSetVariables, defaultNormals, defaultVariables } from "@/utils";
+import { defaultNormals, defaultVariables } from "@/constants/settings";
 const { width, height } = Dimensions.get("window");
 
 export default function Settings() {

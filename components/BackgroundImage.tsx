@@ -17,31 +17,23 @@ export default function BackgroundImage(props: { theme: string | undefined }) {
         cachePolicy="memory-disk"
         style={{
           width: width,
-          height: height + statusBarHeight,
+          height: (height + statusBarHeight)*1.1,
           position: "absolute",
-          top: 0,
+          top: -90,
           right: 0,
           left: 0,
-          zIndex: props.theme ? -30 : 10,
+          zIndex: -30,
         }}
       />
       <Image
-        source={
-          props.theme === "green"
-            ? greenTree
-            : props.theme === "yellow"
-            ? yellowTree
-            : props.theme === "red"
-            ? redTree
-            : undefined
-        }
+        source={props.theme === "green" ? greenTree : props.theme === "yellow" ? yellowTree : props.theme === "red" ? redTree : undefined}
         contentFit="contain"
         cachePolicy="memory-disk"
         style={{
           width: "50%",
           aspectRatio: 1,
           position: "absolute",
-          bottom: (height + statusBarHeight) / 4,
+          bottom: ((height + statusBarHeight) / 4) + 20,
           right: "25%",
           zIndex: -20,
         }}
