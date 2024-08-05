@@ -9,7 +9,7 @@ export default function InputCard(props: {
   theme: string | undefined;
   name: IDetailsText["name"];
   h?: number;
-  value: number | undefined;
+  value: number;
   setVariables: any;
   variableKey: string;
 }) {

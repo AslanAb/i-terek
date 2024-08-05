@@ -15,9 +15,9 @@ const { width, height } = Dimensions.get("window");
 export default function Settings() {
   const [theme, setTheme] = useMMKVString("theme");
   const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
-  const [variables, setVariables] = useState<IWeightOfVariables>(weightOfVariables || ({} as IWeightOfVariables));
+  const [variables, setVariables] = useState<IWeightOfVariables>(weightOfVariables || defaultVariables);
   const [normals, setNormals] = useMMKVObject<INormals>("normals");
-  const [userNormals, setUserNormals] = useState<INormals>(normals || ({} as INormals));
+  const [userNormals, setUserNormals] = useState<INormals>(normals || defaultNormals);
   const scrollViewRef = useRef<ScrollView>(null);
   const [pagePosition, setPagePosition] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -100,7 +100,7 @@ export default function Settings() {
               theme={theme}
               name="pressure"
               h={90}
-              value={variables?.pressure}
+              value={variables.pressure}
               setVariables={setVariables}
               variableKey="pressure"
             />
