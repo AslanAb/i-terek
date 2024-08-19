@@ -29,11 +29,14 @@
     "expo-splash-screen": "~0.26.4",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.4",
+    "expo-updates": "~0.24.13",
     "expo-web-browser": "~12.8.2",
     "openmeteo": "^1.1.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.52.2",
     "react-native": "0.73.6",
+    "react-native-animated-spinkit": "^1.5.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-loading-spinner-overlay": "^3.0.1",
     "react-native-mmkv": "^2.12.2",
@@ -44,8 +47,7 @@
     "react-native-size-matters": "^0.4.2",
     "react-native-svg": "^15.1.0",
     "react-native-web": "~0.19.6",
-    "text-encoding": "^0.7.0",
-    "expo-updates": "~0.24.13"
+    "text-encoding": "^0.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

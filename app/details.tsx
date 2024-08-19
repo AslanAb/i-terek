@@ -7,9 +7,10 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useState } from "react";
 import { IWeather } from "@/types";
+import { storage } from "./_layout";
 
 export default function Details() {
-  const [theme, setTheme] = useMMKVString("theme");
+  const theme = storage.getString("theme");
   const [details, setDetails] = useState<IDetailsText>(detailsText[0]);
   const [weather, setWeather] = useMMKVObject<IWeather>("weather");
 
@@ -69,15 +70,7 @@ export default function Details() {
       </View>
       <View style={{ flex: 1, marginHorizontal: 30, marginBottom: 30, gap: 10 }}>
         <View style={{ gap: 10, flexDirection: "row", justifyContent: "center" }}>
-          <ElevationCard
-            theme={theme}
-            h={90}
-            p={10}
-            w={scale(170)}
-            onPress={() => detailsHandler("pressure")}
-            elevation
-            gradient
-          >
+          <ElevationCard theme={theme} h={90} p={10} w={scale(170)} onPress={() => detailsHandler("pressure")} elevation gradient>
             <View style={{ flex: 1 }}>
               <FontAwesome6 name="tent-arrows-down" size={scale(30)} color="white" />
             </View>
@@ -100,20 +93,12 @@ export default function Details() {
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end", flex: 1, gap: 5 }}>
               <Text style={styles.font14}>за 3 ч.</Text>
-              <Text style={styles.font22}>{weather?.pressureChangingIn3Hours}</Text>
+              <Text style={styles.font22}>{weather?.pressureChangingIn6Hours}</Text>
             </View>
           </ElevationCard>
         </View>
         <View style={{ gap: 10, flexDirection: "row", justifyContent: "center" }}>
-          <ElevationCard
-            theme={theme}
-            h={90}
-            p={10}
-            w={scale(100)}
-            onPress={() => detailsHandler("solar activity")}
-            elevation
-            gradient
-          >
+          <ElevationCard theme={theme} h={90} p={10} w={scale(100)} onPress={() => detailsHandler("solar activity")} elevation gradient>
             <View style={{ flex: 1 }}>
               <MaterialCommunityIcons name="sun-wireless-outline" size={scale(30)} color="white" />
             </View>
@@ -121,15 +106,7 @@ export default function Details() {
               <Text style={styles.font22}>{weather?.solar_activity}</Text>
             </View>
           </ElevationCard>
-          <ElevationCard
-            theme={theme}
-            h={90}
-            p={10}
-            w={scale(100)}
-            onPress={() => detailsHandler("magnetic field")}
-            elevation
-            gradient
-          >
+          <ElevationCard theme={theme} h={90} p={10} w={scale(100)} onPress={() => detailsHandler("magnetic field")} elevation gradient>
             <View style={{ flex: 1 }}>
               <Ionicons name="magnet-sharp" size={scale(30)} color="white" />
             </View>
@@ -138,15 +115,7 @@ export default function Details() {
               <Text style={styles.font22}>{weather?.kp_index}</Text>
             </View>
           </ElevationCard>
-          <ElevationCard
-            theme={theme}
-            h={90}
-            p={10}
-            w={scale(100)}
-            onPress={() => detailsHandler("temperature")}
-            elevation
-            gradient
-          >
+          <ElevationCard theme={theme} h={90} p={10} w={scale(100)} onPress={() => detailsHandler("temperature")} elevation gradient>
             <View style={{ flex: 1 }}>
               <FontAwesome6 name="temperature-three-quarters" size={scale(30)} color="white" />
             </View>
@@ -156,15 +125,7 @@ export default function Details() {
           </ElevationCard>
         </View>
         <View style={{ gap: 10, flexDirection: "row", justifyContent: "center" }}>
-          <ElevationCard
-            theme={theme}
-            h={90}
-            p={10}
-            w={scale(170)}
-            onPress={() => detailsHandler("air pollution")}
-            elevation
-            gradient
-          >
+          <ElevationCard theme={theme} h={90} p={10} w={scale(170)} onPress={() => detailsHandler("air pollution")} elevation gradient>
             <View style={{ flex: 1 }}>
               <MaterialIcons name="masks" size={scale(35)} color="white" />
             </View>
@@ -173,15 +134,7 @@ export default function Details() {
               <Text style={styles.font22}>{weather?.pm2_5}</Text>
             </View>
           </ElevationCard>
-          <ElevationCard
-            theme={theme}
-            h={90}
-            p={10}
-            w={scale(100)}
-            onPress={() => detailsHandler("wind speed")}
-            elevation
-            gradient
-          >
+          <ElevationCard theme={theme} h={90} p={10} w={scale(100)} onPress={() => detailsHandler("wind speed")} elevation gradient>
             <View style={{ flex: 1 }}>
               <MaterialCommunityIcons name="weather-windy" size={scale(30)} color="white" />
             </View>

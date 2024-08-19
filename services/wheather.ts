@@ -89,20 +89,19 @@ const getWeatherAllIn = async (latitude: number, longitude: number) => {
     ) {
       throw new Error("Can't get current weather");
     }
-    console.log('weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 1]: ', weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 1]);
 
     const pressure = (
       weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 1].values.pressureSurfaceLevel / 1.333
     ).toFixed(0);
 
-    const pressure3HoursBefore = (
+    const pressure6HoursBefore = (
       weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 7].values.pressureSurfaceLevel / 1.333
     ).toFixed(0);
 
     const currentWeather: IWeather = {
       temp: currentWeatherAll.main.temp.toFixed(0),
       pressure: pressure,
-      pressureChangingIn3Hours: +pressure - +pressure3HoursBefore,
+      pressureChangingIn6Hours: +pressure - +pressure6HoursBefore,
       wind: currentWeatherAll.wind.speed.toFixed(0),
       dt: currentWeatherAll.dt,
       pm2_5: airPolution.list[0].components.pm2_5,
@@ -117,53 +116,3 @@ const getWeatherAllIn = async (latitude: number, longitude: number) => {
 };
 
 export { tomorrow, getAirPolution, getKPIndex, getSolarActivity, getWeatherAllIn };
-
-// const getWeatherForecast5day3hour = async (latitude: number, longitude: number) => {
-//   const params = {
-//     lat: latitude,
-//     lon: longitude,
-//     appid: Config.apiKey,
-//     units: "metric",
-//     cnt: 1,
-//   };
-
-//   const response = await axios.get(Config.mainUrl + "/data/2.5/forecast", { params });
-//   if (response.status !== 200) {
-//     return new Error("Can't get weather forecast");
-//   }
-
-//   return response.data;
-// };
-
-// const getCurrentWeatherOneCall = async (latitude: number, longitude: number) => {
-//   const params = {
-//     lat: latitude,
-//     lon: longitude,
-//     appid: Config.apiKey,
-//     units: "metric",
-//   };
-
-//   const response = await axios.get(Config.mainUrl + "/data/3.0/onecall", { params });
-//   if (response.status !== 200) {
-//     return new Error("Can't get current weather");
-//   }
-
-//   return response.data;
-// };
-
-// const getCurrentWeatherOneCallTimestamp = async (latitude: number, longitude: number, time: number) => {
-//   const params = {
-//     lat: latitude,
-//     lon: longitude,
-//     appid: Config.apiKey,
-//     units: "metric",
-//     dt: time,
-//   };
-
-//   const response = await axios.get(Config.mainUrl + "/data/3.0/onecall/timemachine", { params });
-//   if (response.status !== 200) {
-//     return new Error("Can't get current weather");
-//   }
-
-//   return response.data;
-// };

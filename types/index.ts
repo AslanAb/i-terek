@@ -6,7 +6,7 @@ export interface ILocation {
 export interface IWeather {
   temp: string;
   pressure: string;
-  pressureChangingIn3Hours: number;
+  pressureChangingIn6Hours: number;
   wind: string;
   dt: number;
   pm2_5: number;
@@ -47,42 +47,52 @@ export interface ISolarActivity {
 }
 
 export interface IWeightOfVariables {
-  temp: number;
-  pressure: number;
-  pressureChangingIn3Hours: number;
-  wind: number;
-  pm2_5: number;
-  kp_index: number;
-  solar_activity: number;
+  temp: string;
+  pressure: string;
+  pressureChangingIn6Hours: string;
+  wind: string;
+  pm2_5: string;
+  kp_index: string;
+  solar_activity: string;
 }
 
 export interface INormals {
   temp: {
-    from: number;
-    to: number;
+    from: string;
+    to: string;
   };
   pressure: {
-    from: number;
-    to: number;
+    from: string;
+    to: string;
   };
-  pressureChangingIn3Hours: {
-    from: number;
-    to: number;
+  pressureChangingIn6Hours: {
+    from: string;
+    to: string;
   };
   wind: {
-    from: number;
-    to: number;
+    from: string;
+    to: string;
   };
   pm2_5: {
-    from: number;
-    to: number;
+    from: string;
+    to: string;
   };
   kp_index: {
-    from: number;
-    to: number;
+    from: string;
+    to: string;
   };
   solar_activity: {
-    from: number;
-    to: number;
+    from: string;
+    to: string;
   };
+}
+
+export interface IVariablesForm {
+  temp: number;
+  pressure: number;
+  pressureChangingIn6Hours: number;
+  wind: number;
+  pm2_5: number;
+  kp_index: number;
+  solar_activity: number;
 }

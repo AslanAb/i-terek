@@ -1,18 +1,12 @@
 import { defaultNormals, defaultVariables } from "@/constants/settings";
 import { INormals, IWeightOfVariables } from "@/types";
+import { useEffect } from "react";
 import { useMMKVObject } from "react-native-mmkv";
 
-const setDefaultSettings = () => {
-  const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
-  const [normals, setNormals] = useMMKVObject<INormals>("normals");
+const useSetDefaultSettings = () => {
 
-  if (!weightOfVariables) {
-    setWeightOfVariables(defaultVariables);
-  }
 
-  if (!normals) {
-    setNormals(defaultNormals);
-  }
+
 };
 
-export { setDefaultSettings };
+export { useSetDefaultSettings };

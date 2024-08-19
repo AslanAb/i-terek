@@ -1,52 +1,43 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { scale, verticalScale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { countryNameByISOCodes } from "@/constants/country_name_by_iso_codes";
-import { ILocation, IWeather } from "@/types";
+import { ILocation, INormals, IWeather, IWeightOfVariables } from "@/types";
 import { changeTheme, getDate } from "@/utils";
 import { useLocation } from "@/hooks/location";
-import { setDefaultSettings } from "@/services/settings";
-import { getAndSetWeather } from "@/hooks/weather";
+import { useSetDefaultSettings } from "@/services/settings";
+import { useGetAndSetWeather } from "@/hooks/weather";
+import { Circle } from "react-native-animated-spinkit";
+import { defaultNormals, defaultVariables } from "@/constants/settings";
 
 export default function Home() {
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  // const [latAndLong, setLatAndLong] = useState<ILocation>({
-  //   latitude: 51.509865,
-  //   longitude: -0.118092,
-  // });
   const [theme, setTheme] = useMMKVString("theme");
-  const [weather, setWeather] = useMMKVObject<IWeather>("weather");
+  const [date, setDate] = useState("");
+  const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
+  const [normals, setNormals] = useMMKVObject<INormals>("normals");
+  const { location, city, country, isLocationError, isLocationLoading } = useLocation();
+  const { weather, isWeatherLoading, isWeatherError } = useGetAndSetWeather(location, isLocationError, isLocationLoading);
 
   useEffect(() => {
-    (async () => {
-      let latAndLong: ILocation;
-      const locationData = await useLocation();
-      if (locationData instanceof Error) {
-        latAndLong = {
-          latitude: 51.509865,
-          longitude: -0.118092,
-        };
-        setCity("Лондон");
-        setCountry(countryNameByISOCodes("Англия"));
-      } else {
-        latAndLong = locationData.location;
-        setCity(locationData.cityAndCounrty.city);
-        setCountry(countryNameByISOCodes(locationData.cityAndCounrty.country));
-      }
+    if (!weightOfVariables) {
+      setWeightOfVariables(defaultVariables);
+    }
 
-      getAndSetWeather(latAndLong, weather, setWeather)
-    })();
+    if (!normals) {
+      setNormals(defaultNormals);
+    }
   }, []);
 
-  const formattedDate = getDate();
-  console.log('formattedDate: ', formattedDate);
-  setDefaultSettings();
+  useFocusEffect(
+    useCallback(() => {
+      const formattedDate = getDate();
+      setDate(formattedDate);
+    }, [])
+  );
 
   return (
     <SafeAreaView
@@ -83,7 +74,7 @@ export default function Home() {
             width: "100%",
           }}
         >
-          {formattedDate}
+          {date}
         </Text>
       </View>
       {/* <Text
