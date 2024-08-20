@@ -4,11 +4,12 @@ import { storage } from "@/app/_layout";
 import { useMMKVObject } from "react-native-mmkv";
 import { useEffect, useState } from "react";
 import { INormals } from "@/types";
-import { defaultNormals } from "@/constants/settings";
+import { defaultNormals, solarActivityIndexies, solarActivityIndexiesArray } from "@/constants/settings";
 import ElevationCard from "./ElevationCard";
 import { scale } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
 import NormalInput from "./NormalInput";
+import SelectDropdownComponent from "./SelectDropdown";
 const { width } = Dimensions.get("window");
 
 export default function NormalsSettings() {
@@ -17,13 +18,13 @@ export default function NormalsSettings() {
 
   const {
     control,
-    register,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: normals,
   });
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: any) => setNormals(data);
 
   return (
     <View
@@ -43,7 +44,14 @@ export default function NormalsSettings() {
         formName="pressureChangingIn6Hours"
         secondInput
       />
-      <NormalInput control={control} errors={errors} theme={theme} inputName="solar activity" formName="solar_activity" secondInput />
+      <SelectDropdownComponent
+        control={control}
+        errors={errors}
+        theme={theme}
+        inputName="solar activity"
+        formName="solar_activity"
+        secondInput
+      />
       <NormalInput control={control} errors={errors} theme={theme} inputName="magnetic field" formName="kp_index" secondInput />
       <NormalInput control={control} errors={errors} theme={theme} inputName="temperature" formName="temp" secondInput />
       <NormalInput control={control} errors={errors} theme={theme} inputName="air pollution" formName="pm2_5" secondInput />
@@ -67,6 +75,9 @@ export default function NormalsSettings() {
           theme={theme}
           w={"100%"}
           onPress={() => {
+            for (const key in defaultNormals) {
+              setValue(key as keyof INormals, defaultNormals[key as keyof INormals]);
+            }
             setNormals(defaultNormals);
           }}
           gradient
