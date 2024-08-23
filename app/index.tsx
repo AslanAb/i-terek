@@ -5,23 +5,22 @@ import { router, useFocusEffect } from "expo-router";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useCallback, useEffect, useState } from "react";
-import { countryNameByISOCodes } from "@/constants/country_name_by_iso_codes";
-import { ILocation, INormals, IWeather, IWeightOfVariables } from "@/types";
+import { IExtremes, INormals, IWeightOfVariables } from "@/types";
 import { changeTheme, getDate } from "@/utils";
 import { useLocation } from "@/hooks/location";
-import { useSetDefaultSettings } from "@/services/settings";
 import { useGetAndSetWeather } from "@/hooks/weather";
-import { Circle } from "react-native-animated-spinkit";
-import { defaultNormals, defaultVariables } from "@/constants/settings";
+import { defaultExtremes, defaultNormals, defaultVariables } from "@/constants/settings";
+import { useTheme } from "@/hooks/theme";
 
 export default function Home() {
   const [theme, setTheme] = useMMKVString("theme");
   const [date, setDate] = useState("");
   const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
   const [normals, setNormals] = useMMKVObject<INormals>("normals");
+  const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
   const { location, city, country, isLocationError, isLocationLoading } = useLocation();
-  const { weather, isWeatherLoading, isWeatherError } = useGetAndSetWeather(location, isLocationError, isLocationLoading);
-
+  const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(location, isLocationError, isLocationLoading);
+  const t = useTheme({ isWeatherLoading, isWeatherError });
   useEffect(() => {
     if (!weightOfVariables) {
       setWeightOfVariables(defaultVariables);
@@ -29,6 +28,10 @@ export default function Home() {
 
     if (!normals) {
       setNormals(defaultNormals);
+    }
+
+    if (!extremes) {
+      setExtremes(defaultExtremes);
     }
   }, []);
 
@@ -56,7 +59,7 @@ export default function Home() {
         }}
       >
         <Text
-          onPress={() => changeTheme(theme, setTheme)}
+          // onPress={() => changeTheme(theme, setTheme)}
           style={{
             color: "white",
             fontFamily: "Podkova-Medium",

@@ -92,17 +92,17 @@ const getWeatherAllIn = async (latitude: number, longitude: number) => {
 
     const pressure = (
       weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 1].values.pressureSurfaceLevel / 1.333
-    ).toFixed(0);
+    )
 
     const pressure6HoursBefore = (
       weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 7].values.pressureSurfaceLevel / 1.333
-    ).toFixed(0);
+    );
 
     const currentWeather: IWeather = {
-      temp: currentWeatherAll.main.temp.toFixed(0),
-      pressure: pressure,
-      pressureChangingIn6Hours: +pressure - +pressure6HoursBefore,
-      wind: currentWeatherAll.wind.speed.toFixed(0),
+      temp: Math.round(currentWeatherAll.main.temp).toFixed(0),
+      pressure: Math.round(pressure).toFixed(0),
+      pressureChangingIn6Hours: Math.round(pressure - pressure6HoursBefore).toFixed(0),
+      wind: Math.round(currentWeatherAll.wind.speed).toFixed(0),
       dt: currentWeatherAll.dt,
       pm2_5: airPolution.list[0].components.pm2_5,
       kp_index: kp_index[kp_index.length - 1][1],

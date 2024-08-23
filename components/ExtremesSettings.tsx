@@ -2,26 +2,27 @@ import { View, Text, Dimensions } from "react-native";
 import { storage } from "@/app/_layout";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { IExtremes, INormals } from "@/types";
-import { defaultNormals } from "@/constants/settings";
+import { defaultExtremes, defaultNormals } from "@/constants/settings";
 import ElevationCard from "./ElevationCard";
 import { scale } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
 import NormalInput from "./NormalInput";
+import ExtremeInput from "./ExtremeInput";
 const { width } = Dimensions.get("window");
 
-export default function NormalsSettings() {
+export default function ExtremesSettings() {
   const [theme, setTheme] = useMMKVString("theme");
-  const [normals, setNormals] = useMMKVObject<INormals>("normals");
   const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
+  const [normals, setNormals] = useMMKVObject<INormals>("normals");
   const {
     control,
     setValue,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    defaultValues: normals,
+    defaultValues: extremes,
   });
-  const onSubmit = (data: any) => setNormals(data);
+  const onSubmit = (data: any) => setExtremes(data);
 
   return (
     <View
@@ -32,61 +33,65 @@ export default function NormalsSettings() {
         gap: 15,
       }}
     >
-      <NormalInput
+      <ExtremeInput
         control={control}
         errors={errors}
         theme={theme}
         inputName="pressure"
         formName="pressure"
         secondInput
-        extremes={extremes}
+        normals={normals}
       />
-      <NormalInput
+      <ExtremeInput
         control={control}
         errors={errors}
         theme={theme}
         inputName="pressure's changing"
         formName="pressureChangingIn6Hours"
         secondInput
-        extremes={extremes}
+        normals={normals}
       />
-      <NormalInput
+      <ExtremeInput
         control={control}
         errors={errors}
         theme={theme}
         inputName="solar activity"
         formName="solar_activity"
         secondInput
-        extremes={extremes}
+        displayOnlyMax
+        normals={normals}
       />
-      <NormalInput
+      <ExtremeInput
         control={control}
         errors={errors}
         theme={theme}
         inputName="magnetic field"
         formName="kp_index"
         secondInput
-        extremes={extremes}
+        displayOnlyMax
+        normals={normals}
       />
-      <NormalInput
-        control={control}
-        errors={errors}
-        theme={theme}
-        inputName="temperature"
-        formName="temp"
-        secondInput
-        extremes={extremes}
-      />
-      <NormalInput
+      <ExtremeInput control={control} errors={errors} theme={theme} inputName="temperature" formName="temp" secondInput normals={normals} />
+      <ExtremeInput
         control={control}
         errors={errors}
         theme={theme}
         inputName="air pollution"
         formName="pm2_5"
         secondInput
-        extremes={extremes}
+        displayOnlyMax
+        normals={normals}
       />
-      <NormalInput control={control} errors={errors} theme={theme} inputName="wind speed" formName="wind" secondInput extremes={extremes} />
+      <ExtremeInput
+        control={control}
+        errors={errors}
+        theme={theme}
+        inputName="wind speed"
+        formName="wind"
+        secondInput
+        displayOnlyMax
+        normals={normals}
+      />
       <View style={{ alignItems: "center", marginBottom: 30, width: "100%", gap: 15 }}>
         <ElevationCard theme={theme} w={"100%"} onPress={handleSubmit(onSubmit)} gradient elevation>
           <Text
@@ -106,10 +111,10 @@ export default function NormalsSettings() {
           theme={theme}
           w={"100%"}
           onPress={() => {
-            for (const key in defaultNormals) {
-              setValue(key as keyof INormals, defaultNormals[key as keyof INormals]);
+            for (const key in defaultExtremes) {
+              setValue(key as keyof IExtremes, defaultExtremes[key as keyof IExtremes]);
             }
-            setNormals(defaultNormals);
+            setExtremes(defaultExtremes);
           }}
           gradient
           elevation

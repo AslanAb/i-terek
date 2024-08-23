@@ -21,16 +21,7 @@ const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, is
         if (differenceInMinutes >= 60) {
           const weatherData = await getWeatherAllIn(latAndLong.latitude, latAndLong.longitude);
           if (weatherData instanceof Error) {
-            setWeather({
-              temp: "0",
-              pressure: "0",
-              pressureChangingIn6Hours: 0,
-              wind: "0",
-              dt: 0,
-              pm2_5: 0,
-              kp_index: "0",
-              solar_activity: "0",
-            });
+            setWeather(undefined);
             throw new Error();
           }
           return setWeather(weatherData);
@@ -54,7 +45,7 @@ const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, is
     fetchWeatherData();
   }, [isLocationError, isLocationLoading]);
 
-  return { weather, isWeatherLoading, isWeatherError };
+  return { isWeatherLoading, isWeatherError };
 };
 
 export { useGetAndSetWeather };

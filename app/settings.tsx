@@ -8,11 +8,12 @@ import { AntDesign } from "@expo/vector-icons";
 import VariablesSettings from "@/components/VariablesSettings";
 import { storage } from "./_layout";
 import NormalsSettings from "@/components/NormalsSettings";
-import RedSettings from "@/components/RedSettings";
+import RedSettings from "@/components/ExtremesSettings";
+import { useMMKVString } from "react-native-mmkv";
 const { width, height } = Dimensions.get("window");
 
 export default function Settings() {
-  const theme = storage.getString("theme");
+  const [theme, setTheme] = useMMKVString("theme");
   const scrollViewRef = useRef<ScrollView>(null);
   const [pagePosition, setPagePosition] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);

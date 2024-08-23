@@ -1,4 +1,4 @@
-import { INormals, IWeightOfVariables } from "@/types";
+import { IExtremes, INormals, IWeightOfVariables } from "@/types";
 
 export const defaultVariables: IWeightOfVariables = {
   temp: "10",
@@ -12,7 +12,7 @@ export const defaultVariables: IWeightOfVariables = {
 
 export const defaultNormals: INormals = {
   temp: {
-    from: "-10",
+    from: "-5",
     to: "25",
   },
   pressure: {
@@ -38,6 +38,33 @@ export const defaultNormals: INormals = {
   solar_activity: {
     from: "A1",
     to: "B2",
+  },
+};
+
+export const defaultExtremes: IExtremes = {
+  temp: {
+    from: "-8",
+    to: "35",
+  },
+  pressure: {
+    from: "710",
+    to: "740",
+  },
+  pressureChangingIn6Hours: {
+    from: "-10",
+    to: "10",
+  },
+  wind: {
+    to: "21",
+  },
+  pm2_5: {
+    to: "16",
+  },
+  kp_index: {
+    to: "5",
+  },
+  solar_activity: {
+    to: "C2",
   },
 };
 
@@ -90,49 +117,49 @@ export const solarActivityIndexies = [
 ];
 
 export const solarActivityIndexiesArray = [
-  { title: "A1", color: "green" },
-  { title: "A2", color: "green" },
-  { title: "A3", color: "green" },
-  { title: "A4", color: "green" },
-  { title: "A5", color: "green" },
-  { title: "A6", color: "green" },
-  { title: "A7", color: "green" },
-  { title: "A8", color: "green" },
-  { title: "A9", color: "green" },
-  { title: "B1", color: "green" },
-  { title: "B2", color: "green" },
-  { title: "B3", color: "green" },
-  { title: "B4", color: "green" },
-  { title: "B5", color: "green" },
-  { title: "B6", color: "green" },
-  { title: "B7", color: "green" },
-  { title: "B8", color: "green" },
-  { title: "B9", color: "green" },
-  { title: "C1", color: "yellow" },
-  { title: "C2", color: "yellow" },
-  { title: "C3", color: "yellow" },
-  { title: "C4", color: "yellow" },
-  { title: "C5", color: "yellow" },
-  { title: "C6", color: "yellow" },
-  { title: "C7", color: "yellow" },
-  { title: "C8", color: "yellow" },
-  { title: "C9", color: "yellow" },
-  { title: "M1", color: "orange" },
-  { title: "M2", color: "orange" },
-  { title: "M3", color: "orange" },
-  { title: "M4", color: "orange" },
-  { title: "M5", color: "orange" },
-  { title: "M6", color: "orange" },
-  { title: "M7", color: "orange" },
-  { title: "M8", color: "orange" },
-  { title: "M9", color: "orange" },
-  { title: "X1", color: "red" },
-  { title: "X2", color: "red" },
-  { title: "X3", color: "red" },
-  { title: "X4", color: "red" },
-  { title: "X5", color: "red" },
-  { title: "X6", color: "red" },
-  { title: "X7", color: "red" },
-  { title: "X8", color: "red" },
-  { title: "X9", color: "red" },
+  { title: "A1", color: "#012200" },
+  { title: "A2", color: "#012200" },
+  { title: "A3", color: "#012200" },
+  { title: "A4", color: "#013300" },
+  { title: "A5", color: "#013300" },
+  { title: "A6", color: "#014400" },
+  { title: "A7", color: "#025500" },
+  { title: "A8", color: "#026600" },
+  { title: "A9", color: "#027700" },
+  { title: "B1", color: "#038800" },
+  { title: "B2", color: "#038800" },
+  { title: "B3", color: "#039900" },
+  { title: "B4", color: "#03aa00" },
+  { title: "B5", color: "#04bb00" },
+  { title: "B6", color: "#04cc00" },
+  { title: "B7", color: "#04dd00" },
+  { title: "B8", color: "#04dd00" },
+  { title: "B9", color: "#05ee00" },
+  { title: "C1", color: "#00ee23" },
+  { title: "C2", color: "#00ee0f" },
+  { title: "C3", color: "#05ee00" },
+  { title: "C4", color: "#19ee00" },
+  { title: "C5", color: "#2dee00" },
+  { title: "C6", color: "#40ee00" },
+  { title: "C7", color: "#54ee00" },
+  { title: "C8", color: "#68ee00" },
+  { title: "C9", color: "#90ee00" },
+  { title: "M1", color: "#b7ee00" },
+  { title: "M2", color: "#cbee00" },
+  { title: "M3", color: "#dfee00" },
+  { title: "M4", color: "#eee900" },
+  { title: "M5", color: "#eec100" },
+  { title: "M6", color: "#eeae00" },
+  { title: "M7", color: "#ee9a00" },
+  { title: "M8", color: "#ee8600" },
+  { title: "M9", color: "#ee5e00" },
+  { title: "X1", color: "#ee4a00" },
+  { title: "X2", color: "#ee3600" },
+  { title: "X3", color: "#ee2300" },
+  { title: "X4", color: "#ee0f00" },
+  { title: "X5", color: "#ee0005" },
+  { title: "X6", color: "#ee0005" },
+  { title: "X7", color: "#ee0019" },
+  { title: "X8", color: "#ee002d" },
+  { title: "X9", color: "#ee002d" },
 ];

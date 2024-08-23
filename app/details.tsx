@@ -10,7 +10,7 @@ import { IWeather } from "@/types";
 import { storage } from "./_layout";
 
 export default function Details() {
-  const theme = storage.getString("theme");
+  const [theme, setTheme] = useMMKVString("theme");
   const [details, setDetails] = useState<IDetailsText>(detailsText[0]);
   const [weather, setWeather] = useMMKVObject<IWeather>("weather");
 

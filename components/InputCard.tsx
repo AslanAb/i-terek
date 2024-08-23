@@ -13,16 +13,6 @@ export default function InputCard(props: {
   onBlur?: any;
   onChange?: any;
 }) {
-  // const changeVariables = (value: any) => {
-  //   let newValue = +value;
-  //   if (isNaN(value) || value === undefined || value < 0) {
-  //     newValue = 0;
-  //   } else if (value > 10) {
-  //     newValue = 10;
-  //   }
-  //   props.setVariables((prev: IWeightOfVariables) => ({ ...prev, [props.variableKey]: newValue }));
-  // };
-
   return (
     <ElevationCard theme={props.theme} p={15} w={"100%"} transparency={1} h={props.h} gradient>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -47,7 +37,7 @@ export default function InputCard(props: {
           {props.name === "wind speed" && "Скорость ветра"}
         </Text>
         <TextInput
-          value={props.value}
+          value={props.value || ""}
           onChangeText={props.onChange}
           keyboardType="numeric"
           onBlur={props.onBlur}

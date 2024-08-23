@@ -1,19 +1,15 @@
-import { Dimensions, View, Text, Button } from "react-native";
-import InputCard from "./InputCard";
-import { useMMKVObject } from "react-native-mmkv";
+import { Dimensions, View, Text } from "react-native";
+import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { IWeightOfVariables } from "@/types";
-import { useEffect, useState } from "react";
 import { defaultVariables } from "@/constants/settings";
 import ElevationCard from "./ElevationCard";
 import { scale } from "react-native-size-matters";
-import { storage } from "@/app/_layout";
-import { useForm, Controller } from "react-hook-form";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { useForm } from "react-hook-form";
 import VariableInput from "./VariableInput";
 const { width } = Dimensions.get("window");
 
 export default function VariablesSettings() {
-  const theme = storage.getString("theme");
+  const [theme, setTheme] = useMMKVString("theme");
   const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
   const {
     control,
@@ -64,7 +60,7 @@ export default function VariablesSettings() {
           onPress={() => {
             for (const key in defaultVariables) {
               setValue(key as keyof IWeightOfVariables, defaultVariables[key as keyof IWeightOfVariables]);
-            } 
+            }
             setWeightOfVariables(defaultVariables);
           }}
         >
