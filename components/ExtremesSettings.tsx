@@ -114,7 +114,6 @@ export default function ExtremesSettings() {
             for (const key in defaultExtremes) {
               setValue(key as keyof IExtremes, defaultExtremes[key as keyof IExtremes]);
             }
-            setExtremes(defaultExtremes);
           }}
           gradient
           elevation

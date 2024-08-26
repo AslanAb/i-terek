@@ -6,7 +6,6 @@ import ElevationCard from "@/components/ElevationCard";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { AntDesign } from "@expo/vector-icons";
 import VariablesSettings from "@/components/VariablesSettings";
-import { storage } from "./_layout";
 import NormalsSettings from "@/components/NormalsSettings";
 import RedSettings from "@/components/ExtremesSettings";
 import { useMMKVString } from "react-native-mmkv";

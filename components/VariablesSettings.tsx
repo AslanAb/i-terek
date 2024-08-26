@@ -61,7 +61,6 @@ export default function VariablesSettings() {
             for (const key in defaultVariables) {
               setValue(key as keyof IWeightOfVariables, defaultVariables[key as keyof IWeightOfVariables]);
             }
-            setWeightOfVariables(defaultVariables);
           }}
         >
           <Text

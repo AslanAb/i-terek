@@ -1,5 +1,4 @@
 import { View, Text, Dimensions } from "react-native";
-import { storage } from "@/app/_layout";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { IExtremes, INormals } from "@/types";
 import { defaultNormals } from "@/constants/settings";
@@ -109,7 +108,6 @@ export default function NormalsSettings() {
             for (const key in defaultNormals) {
               setValue(key as keyof INormals, defaultNormals[key as keyof INormals]);
             }
-            setNormals(defaultNormals);
           }}
           gradient
           elevation

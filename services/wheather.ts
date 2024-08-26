@@ -15,6 +15,8 @@ const openweathermapApiWeather = async (latitude: number, longitude: number) => 
     return new Error("Can't get current weather");
   }
 
+  console.log('wheather: ', response.data);
+
   return response.data;
 };
 
@@ -30,7 +32,7 @@ const tomorrow = async (location: string, timesteps: string) => {
   if (response.status !== 200) {
     return new Error("Can't get current weather");
   }
-
+  console.log('tomorrow: ', response.data);
   return response.data;
 };
 

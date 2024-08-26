@@ -7,7 +7,6 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useState } from "react";
 import { IWeather } from "@/types";
-import { storage } from "./_layout";
 
 export default function Details() {
   const [theme, setTheme] = useMMKVString("theme");
@@ -92,7 +91,7 @@ export default function Details() {
               <Feather name="trending-up" size={scale(30)} color="white" />
             </View>
             <View style={{ flexDirection: "row", alignItems: "flex-end", flex: 1, gap: 5 }}>
-              <Text style={styles.font14}>за 3 ч.</Text>
+              <Text style={styles.font14}>за 6 ч.</Text>
               <Text style={styles.font22}>{weather?.pressureChangingIn6Hours}</Text>
             </View>
           </ElevationCard>

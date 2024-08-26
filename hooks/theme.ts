@@ -9,8 +9,8 @@ const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean })
   const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
   const [normals, setNormals] = useMMKVObject<INormals>("normals");
   const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
+  const [isThemeLoading, setIsThemeLoading] = useState(true);
+  const [isThemeError, setIsThemeError] = useState(false);
 
   const splitString = (input: string): { letterPart: string; numberPart: number } | null => {
     const match = input.match(/^([A-Za-z]+)([\d.]+)$/);
@@ -196,19 +196,21 @@ const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean })
 
   useEffect(() => {
     if (props.isWeatherError) {
-      setIsError(true);
-      setIsLoading(false);
+      setIsThemeError(true);
+      setIsThemeLoading(false);
       return;
     }
     const appTheme = setThemeFn();
     if (appTheme) {
       setTheme(appTheme);
-      setIsLoading(false);
+      setIsThemeLoading(false);
     } else {
-      setIsError(true);
-      setIsLoading(false);
+      setIsThemeError(true);
+      setIsThemeLoading(false);
     }
   }, [props.isWeatherError, props.isWeatherLoading, normals, extremes, weightOfVariables, weather]);
+
+  return { theme, isThemeLoading, isThemeError };
 };
 
 export { useTheme };
