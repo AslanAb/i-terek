@@ -1,7 +1,6 @@
 import axios from "axios";
 import * as Location from "expo-location";
-import { API } from "@/api";
-
+import API from "@/api";
 const getCurrentLocation = async () => {
   let { status } = await Location.requestForegroundPermissionsAsync();
   if (status !== "granted") {
@@ -23,10 +22,10 @@ const getCity = async (latitude: number, longitude: number) => {
   };
 
   const response = await axios.get(API.openweathermapUrl + "/geo/1.0/reverse", { params });
+  console.log('response: ', response);
   if (response.status !== 200) {
     return new Error("Can't get city");
   }
-  console.log("city: ", response.data[0].local_names.ru);
   return {
     city: response.data[0].local_names.ru,
     country: response.data[0].country,

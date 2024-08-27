@@ -1,6 +1,6 @@
 import { View, Text, TextInput } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { scale } from "react-native-size-matters";
+import { scale, ScaledSheet } from "react-native-size-matters";
 import ElevationCard from "./ElevationCard";
 import { IDetailsText } from "@/constants/text";
 import { IExtremes, INormals } from "@/types";
@@ -20,11 +20,9 @@ export default function SelectCard(props: {
 }) {
   return (
     <ElevationCard theme={props.theme} p={15} w={"100%"} transparency={1} h={props.h} gradient>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+      <View style={styles.wrapper}>
         <MaterialCommunityIcons name="sun-wireless-outline" size={scale(30)} color="white" style={{ flex: 1 }} />
-        <Text style={{ flex: 4, textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(16) }}>
-          "Солнечная активность"
-        </Text>
+        <Text style={styles.title}>"Солнечная активность"</Text>
         {!props.displayOnlyMax ? (
           <SelectDropdown
             data={solarActivityIndexiesArray}
@@ -50,9 +48,7 @@ export default function SelectCard(props: {
                     borderRadius: 10,
                   }}
                 >
-                  <Text style={{ textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) }}>
-                    {props.value?.from}
-                  </Text>
+                  <Text style={styles.value}>{props.value?.from}</Text>
                 </View>
               );
             }}
@@ -67,9 +63,7 @@ export default function SelectCard(props: {
                     marginBottom: index === solarActivityIndexiesArray.length - 1 ? 0 : 5,
                   }}
                 >
-                  <Text style={{ textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) }}>
-                    {item.title}
-                  </Text>
+                  <Text style={styles.value}>{item.title}</Text>
                 </View>
               );
             }}
@@ -89,24 +83,19 @@ export default function SelectCard(props: {
           />
         ) : (
           <TextInput
-            style={{
-              backgroundColor:
-                props.theme === "green"
-                  ? "rgb(33, 37, 23)"
-                  : props.theme === "yellow"
-                  ? "#582f0e"
-                  : props.theme === "red"
-                  ? "#370617"
-                  : "blue",
-              flex: 2,
-              padding: 5,
-              borderRadius: 10,
-              textAlign: "center",
-              color: "white",
-              fontFamily: "Podkova-Regular",
-              fontSize: scale(20),
-              opacity: 0.4,
-            }}
+            style={[
+              styles.input,
+              {
+                backgroundColor:
+                  props.theme === "green"
+                    ? "rgb(33, 37, 23)"
+                    : props.theme === "yellow"
+                    ? "#582f0e"
+                    : props.theme === "red"
+                    ? "#370617"
+                    : "blue",
+              },
+            ]}
             editable={false}
           />
         )}
@@ -135,9 +124,7 @@ export default function SelectCard(props: {
                     borderRadius: 10,
                   }}
                 >
-                  <Text style={{ textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) }}>
-                    {props.value?.to}
-                  </Text>
+                  <Text style={styles.value}>{props.value?.to}</Text>
                 </View>
               );
             }}
@@ -152,9 +139,7 @@ export default function SelectCard(props: {
                     marginBottom: index === solarActivityIndexiesArray.length - 1 ? 0 : 5,
                   }}
                 >
-                  <Text style={{ textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) }}>
-                    {item.title}
-                  </Text>
+                  <Text style={styles.title}>{item.title}</Text>
                 </View>
               );
             }}
@@ -177,3 +162,19 @@ export default function SelectCard(props: {
     </ElevationCard>
   );
 }
+
+const styles = ScaledSheet.create({
+  wrapper: { flexDirection: "row", alignItems: "center", gap: 5 },
+  title: { flex: 4, textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(16) },
+  value: { textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) },
+  input: {
+    flex: 2,
+    padding: 5,
+    borderRadius: 10,
+    textAlign: "center",
+    color: "white",
+    fontFamily: "Podkova-Regular",
+    fontSize: scale(20),
+    opacity: 0.4,
+  },
+});

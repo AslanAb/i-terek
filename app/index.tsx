@@ -1,13 +1,11 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { scale, verticalScale } from "react-native-size-matters";
+import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
 import { useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useCallback, useState } from "react";
 import { getDate } from "@/utils";
-import { storage } from "./_layout";
-
 
 export default function Home() {
   const [theme, setTheme] = useMMKVString("theme");
@@ -23,63 +21,16 @@ export default function Home() {
   );
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <View
-        style={{
-          width: "60%",
-          alignSelf: "flex-start",
-          marginLeft: 30,
-          marginTop: verticalScale(30),
-        }}
-      >
-        <Text
-          style={{
-            color: "white",
-            fontFamily: "Podkova-Medium",
-            fontSize: scale(35),
-            width: "100%",
-          }}
-          onPress={() => storage.clearAll()}
-        >
+    <SafeAreaView style={styles.center}>
+      <View style={styles.titleWrapper}>
+        <Text style={styles.city}>
           {city}, {country}
         </Text>
-        <Text
-          style={{
-            color: "white",
-            fontFamily: "Podkova-Regular",
-            fontSize: scale(20),
-            width: "100%",
-          }}
-        >
-          {date}
-        </Text>
+        <Text style={styles.date}>{date}</Text>
       </View>
-      <TouchableOpacity
-        style={{
-          width: "100%",
-          paddingHorizontal: 30,
-          alignItems: "center",
-          marginBottom: 60,
-          zIndex: 100,
-        }}
-        onPress={() => router.push("/details")}
-      >
+      <TouchableOpacity style={styles.wrapper} onPress={() => router.push("/details")}>
         <ElevationCard theme={theme} transparency={1} gradient>
-          <Text
-            style={{
-              color: "white",
-              fontFamily: "Podkova-Regular",
-              fontSize: scale(22),
-              textAlign: "center",
-              padding: 10,
-            }}
-          >
+          <Text style={styles.font22}>
             {theme === "green"
               ? "Сегодня всё нормально"
               : theme === "yellow"
@@ -93,3 +44,43 @@ export default function Home() {
     </SafeAreaView>
   );
 }
+
+const styles = ScaledSheet.create({
+  center: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  titleWrapper: {
+    width: "60%",
+    alignSelf: "flex-start",
+    marginLeft: 30,
+    marginTop: verticalScale(30),
+  },
+  city: {
+    color: "white",
+    fontFamily: "Podkova-Medium",
+    fontSize: scale(35),
+    width: "100%",
+  },
+  date: {
+    color: "white",
+    fontFamily: "Podkova-Regular",
+    fontSize: scale(20),
+    width: "100%",
+  },
+  wrapper: {
+    width: "100%",
+    paddingHorizontal: 30,
+    alignItems: "center",
+    marginBottom: 60,
+    zIndex: 100,
+  },
+  font22: {
+    color: "white",
+    fontFamily: "Podkova-Regular",
+    fontSize: scale(22),
+    textAlign: "center",
+    padding: 10,
+  },
+});

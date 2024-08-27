@@ -33,28 +33,13 @@ export default function Settings() {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-      }}
-    >
-      <View
-        style={{
-          width: "100%",
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          right: 0,
-          left: 0,
-          zIndex: -10,
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
-        }}
-      />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.blur} />
       <View style={styles.indicatorContainer}>
         {[0, 1, 2].map((i) => (
           <View key={i} style={{ justifyContent: "center" }}>
             <ElevationCard theme={theme} transparency={1}>
-              <Text style={[styles.font22, { padding: 10, alignItems: "center", justifyContent: "center" }]}>
+              <Text style={[styles.font22]}>
                 {scrollPosition === i ? (i === 0 ? "Вес показателей" : i === 1 ? "Норм. значения" : "Экстремумы") : ""}
                 {scrollPosition !== i ? (
                   i < scrollPosition ? (
@@ -92,21 +77,13 @@ export default function Settings() {
 }
 
 const styles = ScaledSheet.create({
-  font14: {
-    color: "white",
-    fontFamily: "Podkova-Regular",
-    fontSize: scale(20),
-  },
   font22: {
     color: "white",
     fontFamily: "Podkova-Bold",
     fontSize: scale(24),
-  },
-  box: {
-    width: width,
+    padding: 10,
     alignItems: "center",
-    paddingHorizontal: 30,
-    gap: 15,
+    justifyContent: "center",
   },
   indicatorContainer: {
     flexDirection: "row",
@@ -116,14 +93,14 @@ const styles = ScaledSheet.create({
     marginBottom: 20,
     gap: 10,
   },
-  indicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "#C9DBFA",
-    margin: 5,
-  },
-  activeIndicator: {
-    backgroundColor: "#704DFF",
+  blur: {
+    width: "100%",
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    zIndex: -10,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
 });

@@ -4,7 +4,7 @@ import { Control, Controller, FieldErrors } from "react-hook-form";
 import { IWeightOfVariables } from "@/types";
 import InputCard from "./InputCard";
 import { AntDesign } from "@expo/vector-icons";
-import { scale } from "react-native-size-matters";
+import { scale, ScaledSheet } from "react-native-size-matters";
 import { IDetailsText } from "@/constants/text";
 
 const VariableInput = (props: {
@@ -39,17 +39,7 @@ const VariableInput = (props: {
       {props.errors[props.formName] && (
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 5 }}>
           <AntDesign name="warning" size={scale(18)} color="white" />
-          <Text
-            style={{
-              color: "white",
-              fontFamily: "Podkova-Regular",
-              fontSize: scale(18),
-              textAlign: "center",
-              height: "100%",
-            }}
-          >
-            {props.errors[props.formName]?.message}
-          </Text>
+          <Text style={styles.text}>{props.errors[props.formName]?.message}</Text>
         </View>
       )}
     </View>
@@ -57,3 +47,12 @@ const VariableInput = (props: {
 };
 
 export default VariableInput;
+const styles = ScaledSheet.create({
+  text: {
+    color: "white",
+    fontFamily: "Podkova-Regular",
+    fontSize: scale(18),
+    textAlign: "center",
+    height: "100%",
+  },
+});

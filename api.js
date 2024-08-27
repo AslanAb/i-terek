@@ -5,4 +5,4 @@ const API = {
   tomorrowAppid: "MRx5CQIXZ3cqUg9PeYykfbENDDVy7RTY",
 };
 
-export { API };
+export default API;

@@ -1,6 +1,6 @@
+import API from "@/api";
 import { IAirPolution, IOpenweathermapWeather, ISolarActivity, ITomorrowWeather, IWeather } from "@/types";
 import axios from "axios";
-import { API } from "@/api";
 
 const openweathermapApiWeather = async (latitude: number, longitude: number) => {
   const params = {
@@ -88,13 +88,10 @@ const getWeatherAllIn = async (latitude: number, longitude: number) => {
       throw new Error("Can't get current weather");
     }
 
-    const pressure = (
-      weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 1].values.pressureSurfaceLevel / 1.333
-    )
+    const pressure = weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 1].values.pressureSurfaceLevel / 1.333;
 
-    const pressure6HoursBefore = (
-      weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 7].values.pressureSurfaceLevel / 1.333
-    );
+    const pressure6HoursBefore =
+      weatherTomorror.timelines.hourly[weatherTomorror.timelines.hourly.length - 7].values.pressureSurfaceLevel / 1.333;
 
     const currentWeather: IWeather = {
       temp: Math.round(currentWeatherAll.main.temp).toFixed(0),

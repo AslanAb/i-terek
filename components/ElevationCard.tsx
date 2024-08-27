@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, View } from "react-native";
 // @ts-ignore
 import { LinearGradient } from "expo-linear-gradient";
+import { ScaledSheet } from "react-native-size-matters";
 
 export default function ElevationCard(props: {
   theme: string | undefined;
@@ -34,18 +35,14 @@ export default function ElevationCard(props: {
       >
         {props.elevation && (
           <View
-            style={{
-              height: height,
-              overflow: "hidden",
-              borderRadius: 30,
-              width: width,
-              position: "absolute",
-              top: 3,
-              right: -3,
-              backgroundColor: "#1D0F0F",
-              zIndex: -1,
-            }}
-          ></View>
+            style={[
+              styles.elevation,
+              {
+                height: height,
+                width: width,
+              },
+            ]}
+          />
         )}
         {props.gradient && (
           <LinearGradient
@@ -60,14 +57,13 @@ export default function ElevationCard(props: {
             }
             locations={[0.1, 1]}
             start={{ x: 0.4, y: -0.6 }}
-            style={{
-              height: height,
-              overflow: "hidden",
-              borderRadius: 30,
-              width: width,
-              position: "absolute",
-              zIndex: -1,
-            }}
+            style={[
+              styles.gradient,
+              {
+                height: height,
+                width: width,
+              },
+            ]}
           />
         )}
         <View
@@ -102,3 +98,21 @@ export default function ElevationCard(props: {
     </>
   );
 }
+
+const styles = ScaledSheet.create({
+  elevation: {
+    overflow: "hidden",
+    borderRadius: 30,
+    position: "absolute",
+    top: 3,
+    right: -3,
+    backgroundColor: "#1D0F0F",
+    zIndex: -1,
+  },
+  gradient: {
+    overflow: "hidden",
+    borderRadius: 30,
+    position: "absolute",
+    zIndex: -1,
+  },
+});

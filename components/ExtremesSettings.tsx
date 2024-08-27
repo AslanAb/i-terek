@@ -3,7 +3,7 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { IExtremes, INormals } from "@/types";
 import { defaultExtremes } from "@/constants/settings";
 import ElevationCard from "./ElevationCard";
-import { scale } from "react-native-size-matters";
+import { scale, ScaledSheet } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
 import ExtremeInput from "./ExtremeInput";
 const { width } = Dimensions.get("window");
@@ -23,14 +23,7 @@ export default function ExtremesSettings() {
   const onSubmit = (data: any) => setExtremes(data);
 
   return (
-    <View
-      style={{
-        width: width,
-        alignItems: "center",
-        paddingHorizontal: 30,
-        gap: 15,
-      }}
-    >
+    <View style={styles.wrapper}>
       <ExtremeInput
         control={control}
         errors={errors}
@@ -90,20 +83,9 @@ export default function ExtremesSettings() {
         displayOnlyMax
         normals={normals}
       />
-      <View style={{ alignItems: "center", marginBottom: 30, width: "100%", gap: 15 }}>
+      <View style={styles.center}>
         <ElevationCard theme={theme} w={"100%"} onPress={handleSubmit(onSubmit)} gradient elevation>
-          <Text
-            style={{
-              color: "white",
-              fontFamily: "Podkova-Regular",
-              fontSize: scale(22),
-              textAlign: "center",
-              padding: 10,
-              width: width - 60,
-            }}
-          >
-            Сохранить
-          </Text>
+          <Text style={styles.font22}>Сохранить</Text>
         </ElevationCard>
         <ElevationCard
           theme={theme}
@@ -116,20 +98,27 @@ export default function ExtremesSettings() {
           gradient
           elevation
         >
-          <Text
-            style={{
-              color: "white",
-              fontFamily: "Podkova-Regular",
-              fontSize: scale(22),
-              textAlign: "center",
-              padding: 10,
-              width: width - 60,
-            }}
-          >
-            Вернуть значения по умолчанию
-          </Text>
+          <Text style={styles.font22}>Вернуть значения по умолчанию</Text>
         </ElevationCard>
       </View>
     </View>
   );
 }
+
+const styles = ScaledSheet.create({
+  wrapper: {
+    width: width,
+    alignItems: "center",
+    paddingHorizontal: 30,
+    gap: 15,
+  },
+  center: { alignItems: "center", marginBottom: 30, width: "100%", gap: 15 },
+  font22: {
+    color: "white",
+    fontFamily: "Podkova-Regular",
+    fontSize: scale(22),
+    textAlign: "center",
+    padding: 10,
+    width: width - 60,
+  },
+});

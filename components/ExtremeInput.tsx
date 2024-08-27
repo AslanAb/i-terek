@@ -3,13 +3,13 @@ import React from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import { IExtremes, INormals } from "@/types";
 import { AntDesign } from "@expo/vector-icons";
-import { scale } from "react-native-size-matters";
+import { scale, ScaledSheet } from "react-native-size-matters";
 import { IDetailsText } from "@/constants/text";
 import Input2Card from "./Input2Card";
 import SelectCard from "./SelectCard";
 import { solarActivityIndexies } from "@/constants/settings";
 
-const ExtremeInput = (props: {
+export default function ExtremeInput(props: {
   control: Control<IExtremes> | undefined;
   errors: FieldErrors<IExtremes>;
   theme: string | undefined;
@@ -18,7 +18,7 @@ const ExtremeInput = (props: {
   secondInput?: boolean;
   displayOnlyMax?: boolean;
   normals?: INormals | undefined;
-}) => {
+}) {
   return (
     <View style={{ width: "100%" }}>
       <Controller
@@ -153,23 +153,22 @@ const ExtremeInput = (props: {
         name={props.formName}
       />
       {props.errors[props.formName] && (
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 5 }}>
+        <View style={styles.center}>
           <AntDesign name="warning" size={scale(18)} color="white" />
-          <Text
-            style={{
-              color: "white",
-              fontFamily: "Podkova-Regular",
-              fontSize: scale(18),
-              textAlign: "center",
-              height: "100%",
-            }}
-          >
-            {props.errors[props.formName]?.message}
-          </Text>
+          <Text style={styles.font18}>{props.errors[props.formName]?.message}</Text>
         </View>
       )}
     </View>
   );
-};
+}
 
-export default ExtremeInput;
+const styles = ScaledSheet.create({
+  center: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 5 },
+  font18: {
+    color: "white",
+    fontFamily: "Podkova-Regular",
+    fontSize: scale(18),
+    textAlign: "center",
+    height: "100%",
+  },
+});

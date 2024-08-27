@@ -3,7 +3,7 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { IWeightOfVariables } from "@/types";
 import { defaultVariables } from "@/constants/settings";
 import ElevationCard from "./ElevationCard";
-import { scale } from "react-native-size-matters";
+import { scale, ScaledSheet } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
 import VariableInput from "./VariableInput";
 const { width } = Dimensions.get("window");
@@ -22,14 +22,7 @@ export default function VariablesSettings() {
   const onSubmit = (data: any) => setWeightOfVariables(data);
 
   return (
-    <View
-      style={{
-        width: width,
-        alignItems: "center",
-        paddingHorizontal: 30,
-        gap: 15,
-      }}
-    >
+    <View style={styles.wrapper}>
       <VariableInput control={control} theme={theme} errors={errors} inputName="pressure" formName="pressure" />
       <VariableInput control={control} theme={theme} errors={errors} inputName="pressure's changing" formName="pressureChangingIn6Hours" />
       <VariableInput control={control} theme={theme} errors={errors} inputName="solar activity" formName="solar_activity" />
@@ -37,20 +30,9 @@ export default function VariablesSettings() {
       <VariableInput control={control} theme={theme} errors={errors} inputName="temperature" formName="temp" />
       <VariableInput control={control} theme={theme} errors={errors} inputName="air pollution" formName="pm2_5" />
       <VariableInput control={control} theme={theme} errors={errors} inputName="wind speed" formName="wind" />
-      <View style={{ alignItems: "center", width: "100%", gap: 15 }}>
+      <View style={styles.center}>
         <ElevationCard theme={theme} w={"100%"} gradient elevation onPress={handleSubmit(onSubmit)}>
-          <Text
-            style={{
-              color: "white",
-              fontFamily: "Podkova-Regular",
-              fontSize: scale(22),
-              textAlign: "center",
-              padding: 10,
-              width: width - 60,
-            }}
-          >
-            Сохранить
-          </Text>
+          <Text style={styles.font22}>Сохранить</Text>
         </ElevationCard>
         <ElevationCard
           theme={theme}
@@ -63,20 +45,27 @@ export default function VariablesSettings() {
             }
           }}
         >
-          <Text
-            style={{
-              color: "white",
-              fontFamily: "Podkova-Regular",
-              fontSize: scale(22),
-              textAlign: "center",
-              padding: 10,
-              width: width - 60,
-            }}
-          >
-            Вернуть значения по умолчанию
-          </Text>
+          <Text style={styles.font22}>Вернуть значения по умолчанию</Text>
         </ElevationCard>
       </View>
     </View>
   );
 }
+
+const styles = ScaledSheet.create({
+  wrapper: {
+    width: width,
+    alignItems: "center",
+    paddingHorizontal: 30,
+    gap: 15,
+  },
+  center: { alignItems: "center", width: "100%", gap: 15 },
+  font22: {
+    color: "white",
+    fontFamily: "Podkova-Regular",
+    fontSize: scale(22),
+    textAlign: "center",
+    padding: 10,
+    width: width - 60,
+  },
+});

@@ -17,6 +17,7 @@ const useLocation = () => {
         throw new Error();
       }
       const cityAndCountry = await getCity(locationData.latitude, locationData.longitude);
+      console.log('cityAndCountry: ', cityAndCountry);
       if (cityAndCountry instanceof Error) {
         throw new Error();
       }
