@@ -3,7 +3,6 @@ import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather, FontAwesome6 
 import { scale } from "react-native-size-matters";
 import ElevationCard from "./ElevationCard";
 import { IDetailsText } from "@/constants/text";
-import { IWeightOfVariables } from "@/types";
 
 export default function InputCard(props: {
   theme: string | undefined;

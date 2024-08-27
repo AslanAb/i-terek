@@ -37,13 +37,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store",
       [
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(i-terek) to use your location."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

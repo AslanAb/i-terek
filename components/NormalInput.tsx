@@ -1,8 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { Control, Controller, FieldErrors, UseFormRegister } from "react-hook-form";
-import { IExtremes, INormals, IWeightOfVariables } from "@/types";
-import InputCard from "./InputCard";
+import { Control, Controller, FieldErrors } from "react-hook-form";
+import { IExtremes, INormals } from "@/types";
 import { AntDesign } from "@expo/vector-icons";
 import { scale } from "react-native-size-matters";
 import { IDetailsText } from "@/constants/text";

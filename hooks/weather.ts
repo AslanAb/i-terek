@@ -10,8 +10,8 @@ const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, is
 
   const fetchWeatherData = async () => {
     try {
-      if (isLocationError || isLocationLoading) {
-        return;
+      if (isLocationError) {
+        throw new Error();
       }
       if (weather) {
         const dtDate: Date = new Date(weather.dt * 1000);
@@ -34,7 +34,6 @@ const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, is
         return setWeather(weatherData);
       }
     } catch (error) {
-      console.error("🚨error --->", error);
       setIsWeatherError(true);
     } finally {
       setIsWeatherLoading(false);
@@ -42,7 +41,9 @@ const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, is
   };
 
   useEffect(() => {
-    fetchWeatherData();
+    if (!isLocationLoading) {
+      fetchWeatherData();
+    }
   }, [isLocationError, isLocationLoading]);
 
   return { isWeatherLoading, isWeatherError };

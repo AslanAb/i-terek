@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Pressable, TouchableOpacity, View } from "react-native";
-import { scale } from "react-native-size-matters";
+import { Pressable, View } from "react-native";
+// @ts-ignore
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function ElevationCard(props: {

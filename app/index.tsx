@@ -6,6 +6,7 @@ import { useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useCallback, useState } from "react";
 import { getDate } from "@/utils";
+import { storage } from "./_layout";
 
 
 export default function Home() {
@@ -44,6 +45,7 @@ export default function Home() {
             fontSize: scale(35),
             width: "100%",
           }}
+          onPress={() => storage.clearAll()}
         >
           {city}, {country}
         </Text>

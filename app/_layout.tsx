@@ -3,14 +3,12 @@ import { Stack, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { MMKV, useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { MMKV, useMMKVString } from "react-native-mmkv";
 import BackgroundImage from "@/components/BackgroundImage";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity, ImageBackground } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import { scale } from "react-native-size-matters";
-import { IExtremes, INormals, IWeightOfVariables } from "@/types";
-import { defaultExtremes, defaultNormals, defaultVariables } from "@/constants/settings";
 import { useLocation } from "@/hooks/location";
 import { useGetAndSetWeather } from "@/hooks/weather";
 import { useTheme } from "@/hooks/theme";
@@ -27,26 +25,9 @@ export default function RootLayout() {
     "Podkova-SemiBold": require("@/assets/fonts/Podkova_600SemiBold.ttf"),
     "Podkova-Bold": require("@/assets/fonts/Podkova_700Bold.ttf"),
   });
-  const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
-  const [normals, setNormals] = useMMKVObject<INormals>("normals");
-  const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
   const location = useLocation();
   const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(location.location, location.isLocationError, location.isLocationLoading);
   const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
-
-  useEffect(() => {
-    if (!weightOfVariables) {
-      setWeightOfVariables(defaultVariables);
-    }
-
-    if (!normals) {
-      setNormals(defaultNormals);
-    }
-
-    if (!extremes) {
-      setExtremes(defaultExtremes);
-    }
-  }, []);
 
   useEffect(() => {
     if (error) throw error;
@@ -54,12 +35,12 @@ export default function RootLayout() {
   }, [error, isThemeError]);
 
   useEffect(() => {
-    if (loaded || !isThemeLoading) {
+    if (loaded && !isThemeLoading) {
       SplashScreen.hideAsync();
     }
   }, [loaded, isThemeLoading]);
 
-  if (!loaded || isThemeLoading) {
+  if (!loaded && isThemeLoading) {
     return null;
   }
 
@@ -109,12 +90,12 @@ function RootLayoutNav() {
           />
         </Stack>
         <BackgroundImage theme={theme} />
-        <Spinner
+        {/* <Spinner
           visible={theme ? false : true}
           // cancelable
           textContent={"Загрузка..."}
           textStyle={{ textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) }}
-        />
+        /> */}
       </SafeAreaProvider>
     </ImageBackground>
   );

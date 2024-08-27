@@ -1,12 +1,10 @@
 import { View, Text, Dimensions } from "react-native";
-import { storage } from "@/app/_layout";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { IExtremes, INormals } from "@/types";
-import { defaultExtremes, defaultNormals } from "@/constants/settings";
+import { defaultExtremes } from "@/constants/settings";
 import ElevationCard from "./ElevationCard";
 import { scale } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
-import NormalInput from "./NormalInput";
 import ExtremeInput from "./ExtremeInput";
 const { width } = Dimensions.get("window");
 

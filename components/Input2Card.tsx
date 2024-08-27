@@ -4,7 +4,6 @@ import { scale } from "react-native-size-matters";
 import ElevationCard from "./ElevationCard";
 import { IDetailsText } from "@/constants/text";
 import { IExtremes, INormals } from "@/types";
-import { UseFormRegister } from "react-hook-form";
 
 export default function Input2Card(props: {
   theme: string | undefined;
