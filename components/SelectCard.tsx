@@ -2,8 +2,7 @@ import { View, Text, TextInput } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { scale, ScaledSheet } from "react-native-size-matters";
 import ElevationCard from "./ElevationCard";
-import { IDetailsText } from "@/constants/text";
-import { IExtremes, INormals } from "@/types";
+import { IDetailsText, IExtremes, INormals } from "@/types";
 import SelectDropdown from "react-native-select-dropdown";
 import { solarActivityIndexiesArray } from "@/constants/settings";
 

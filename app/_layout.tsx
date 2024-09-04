@@ -3,7 +3,7 @@ import { Stack, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { MMKV, useMMKVString } from "react-native-mmkv";
+import { MMKV, useMMKVBoolean, useMMKVObject, useMMKVString } from "react-native-mmkv";
 import BackgroundImage from "@/components/BackgroundImage";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity, ImageBackground } from "react-native";
@@ -14,6 +14,7 @@ import { useGetAndSetWeather } from "@/hooks/weather";
 import { useTheme } from "@/hooks/theme";
 export { ErrorBoundary } from "expo-router";
 import mainBg from "@/assets/images/main_bg_2.jpg";
+import { IWeather } from "@/types";
 
 SplashScreen.preventAutoHideAsync();
 export const storage = new MMKV();
@@ -25,22 +26,17 @@ export default function RootLayout() {
     "Podkova-SemiBold": require("@/assets/fonts/Podkova_600SemiBold.ttf"),
     "Podkova-Bold": require("@/assets/fonts/Podkova_700Bold.ttf"),
   });
-  const location = useLocation();
-  const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(location.location, location.isLocationError, location.isLocationLoading);
-  const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
-
   useEffect(() => {
     if (error) throw error;
-    if (isThemeError) throw new Error("Theme error");
-  }, [error, isThemeError]);
+  }, [error]);
 
   useEffect(() => {
-    if (loaded && !isThemeLoading) {
+    if (loaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, isThemeLoading]);
+  }, [loaded]);
 
-  if (!loaded && isThemeLoading) {
+  if (!loaded) {
     return null;
   }
 
@@ -49,6 +45,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const [theme, setTheme] = useMMKVString("theme");
+  const [isLoading, setIsLoading] = useMMKVBoolean("isLoading");
 
   return (
     <ImageBackground source={mainBg} resizeMode="cover" style={{ flex: 1 }}>
@@ -89,13 +86,7 @@ function RootLayoutNav() {
             }}
           />
         </Stack>
-        <BackgroundImage theme={theme} />
-        {/* <Spinner
-          visible={theme ? false : true}
-          // cancelable
-          textContent={"Загрузка..."}
-          textStyle={{ textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) }}
-        /> */}
+        <BackgroundImage theme={isLoading ? undefined : theme} />
       </SafeAreaProvider>
     </ImageBackground>
   );

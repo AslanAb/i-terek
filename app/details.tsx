@@ -1,12 +1,12 @@
 import { View, Text, ScrollView } from "react-native";
 import { ScaledSheet, scale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { detailsText, IDetailsText } from "@/constants/text";
+import { detailsText } from "@/constants/text";
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather, FontAwesome6 } from "@expo/vector-icons";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useState } from "react";
-import { IWeather } from "@/types";
+import { IDetailsText, IWeather } from "@/types";
 
 export default function Details() {
   const [theme, setTheme] = useMMKVString("theme");

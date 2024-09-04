@@ -22,13 +22,15 @@ const getCity = async (latitude: number, longitude: number) => {
   };
 
   const response = await axios.get(API.openweathermapUrl + "/geo/1.0/reverse", { params });
-  console.log('response: ', response);
   if (response.status !== 200) {
     return new Error("Can't get city");
   }
+  console.log('response.data[0]: ', new Date());
+
   return {
     city: response.data[0].local_names.ru,
     country: response.data[0].country,
+    date: new Date(),
   };
 };
 

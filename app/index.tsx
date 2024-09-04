@@ -2,16 +2,24 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
-import { useMMKVString } from "react-native-mmkv";
+import { useMMKVBoolean, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getDate } from "@/utils";
+import { useLocation } from "@/hooks/location";
+import { useGetAndSetWeather } from "@/hooks/weather";
+import { useTheme } from "@/hooks/theme";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function Home() {
+  const location = useLocation();
+  const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(location.location, location.isLocationError, location.isLocationLoading);
+  const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
   const [theme, setTheme] = useMMKVString("theme");
   const [city, setCity] = useMMKVString("city");
   const [country, setCountry] = useMMKVString("country");
   const [date, setDate] = useState("");
+  const [isLoading, setIsLoading] = useMMKVBoolean("isLoading");
 
   useFocusEffect(
     useCallback(() => {
@@ -19,6 +27,26 @@ export default function Home() {
       setDate(formattedDate);
     }, [])
   );
+
+  useEffect(() => {
+    if (!isThemeLoading) {
+      setIsLoading(false);
+    }
+  }, [isThemeLoading]);
+
+  if (isThemeLoading) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <Spinner
+          visible={true}
+          // cancelable
+          // textContent={"Загрузка..."}
+          // textStyle={{ textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) }}
+          size="large"
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.center}>

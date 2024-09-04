@@ -1,7 +1,7 @@
 import { defaultExtremes, defaultNormals, defaultVariables, solarActivityIndexies } from "@/constants/settings";
 import { IExtremes, INormals, IWeather, IWeightOfVariables } from "@/types";
 import { useEffect, useState } from "react";
-import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { useMMKVBoolean, useMMKVObject, useMMKVString } from "react-native-mmkv";
 
 const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean }) => {
   const [theme, setTheme] = useMMKVString("theme");
@@ -11,6 +11,7 @@ const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean })
   const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
   const [isThemeLoading, setIsThemeLoading] = useState(true);
   const [isThemeError, setIsThemeError] = useState(false);
+  const [isLoading, setIsLoading] = useMMKVBoolean("isLoading");
 
   const splitString = (input: string): { letterPart: string; numberPart: number } | null => {
     const match = input.match(/^([A-Za-z]+)([\d.]+)$/);
@@ -61,7 +62,6 @@ const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean })
     let vars = weightOfVariables;
     let nors = normals;
     let exts = extremes;
-    console.log("exts: ", exts);
     if (!vars || !nors || !exts) {
       vars = defaultVariables;
       nors = defaultNormals;
@@ -209,6 +209,7 @@ const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean })
     if (!props.isWeatherLoading) {
       const appTheme = setThemeFn();
       if (appTheme) {
+        setIsLoading(false);
         setTheme(appTheme);
         setIsThemeLoading(false);
       } else {

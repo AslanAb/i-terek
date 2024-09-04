@@ -1,7 +1,7 @@
 import { getWeatherAllIn } from "@/services/wheather";
 import { ILocation, IWeather } from "@/types";
 import { useEffect, useState } from "react";
-import { useMMKVObject } from "react-native-mmkv";
+import { useMMKVBoolean, useMMKVObject } from "react-native-mmkv";
 
 const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, isLocationLoading: boolean) => {
   const [weather, setWeather] = useMMKVObject<IWeather>("weather");
@@ -41,6 +41,10 @@ const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, is
   };
 
   useEffect(() => {
+    if (isLocationError) {
+      setIsWeatherLoading(false);
+      setIsWeatherError(true);
+    }
     if (!isLocationLoading) {
       fetchWeatherData();
     }

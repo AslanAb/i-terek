@@ -2,7 +2,7 @@ import { View, Text, TextInput } from "react-native";
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather, FontAwesome6 } from "@expo/vector-icons";
 import { scale, ScaledSheet } from "react-native-size-matters";
 import ElevationCard from "./ElevationCard";
-import { IDetailsText } from "@/constants/text";
+import { IDetailsText } from "@/types";
 
 export default function InputCard(props: {
   theme: string | undefined;

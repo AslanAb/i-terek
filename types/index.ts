@@ -113,3 +113,16 @@ export interface IExtremes {
     to: string;
   };
 }
+
+export interface IDetailsText {
+  name:
+    | "pressure"
+    | "pressure's changing"
+    | "solar activity"
+    | "magnetic field"
+    | "temperature"
+    | "air pollution"
+    | "wind speed";
+  title: string;
+  description: string;
+}

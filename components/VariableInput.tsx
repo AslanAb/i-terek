@@ -1,11 +1,10 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
-import { IWeightOfVariables } from "@/types";
+import { IDetailsText, IWeightOfVariables } from "@/types";
 import InputCard from "./InputCard";
 import { AntDesign } from "@expo/vector-icons";
 import { scale, ScaledSheet } from "react-native-size-matters";
-import { IDetailsText } from "@/constants/text";
 
 const VariableInput = (props: {
   control: Control<IWeightOfVariables> | undefined;

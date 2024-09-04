@@ -1,10 +1,9 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
-import { IExtremes, INormals } from "@/types";
+import { IDetailsText, IExtremes, INormals } from "@/types";
 import { AntDesign } from "@expo/vector-icons";
 import { scale, ScaledSheet } from "react-native-size-matters";
-import { IDetailsText } from "@/constants/text";
 import Input2Card from "./Input2Card";
 import SelectCard from "./SelectCard";
 import { solarActivityIndexies } from "@/constants/settings";
