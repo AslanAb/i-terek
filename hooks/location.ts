@@ -19,7 +19,6 @@ const useLocation = () => {
         throw new Error();
       }
       const cityAndCountry = await getCity(locationData.latitude, locationData.longitude);
-      console.log("cityAndCountry: ", cityAndCountry);
       if (cityAndCountry instanceof Error) {
         throw new Error();
       }
@@ -32,6 +31,7 @@ const useLocation = () => {
       setIsLocationError(true);
     } finally {
       setIsLocationLoading(false);
+      console.log("location fetched")
     }
   }, []);
 
@@ -53,7 +53,7 @@ const useLocation = () => {
       setIsLoading(true);
       fetchLocationData();
     } else {
-      setIsLoading(true);
+      setIsLoading(false);
       setIsLocationLoading(false);
     }
   }, []);

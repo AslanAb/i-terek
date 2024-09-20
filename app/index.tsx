@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, RefreshControl, ScrollView } from "react-native";
 import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
@@ -20,7 +20,7 @@ export default function Home() {
   const [country, setCountry] = useMMKVString("country");
   const [date, setDate] = useState("");
   const [isLoading, setIsLoading] = useMMKVBoolean("isLoading");
-
+  const [refreshing, setRefreshing] = useState(false);
   useFocusEffect(
     useCallback(() => {
       const formattedDate = getDate();
@@ -33,6 +33,12 @@ export default function Home() {
       setIsLoading(false);
     }
   }, [isThemeLoading]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    
+    setRefreshing(false);
+  }, []);
 
   if (isThemeLoading) {
     return (
@@ -50,25 +56,42 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.center}>
-      <View style={styles.titleWrapper}>
-        <Text style={styles.city}>
-          {city}, {country}
-        </Text>
-        <Text style={styles.date}>{date}</Text>
-      </View>
-      <TouchableOpacity style={styles.wrapper} onPress={() => router.push("/details")}>
-        <ElevationCard theme={theme} transparency={1} gradient>
-          <Text style={styles.font22}>
-            {theme === "green"
-              ? "Сегодня всё нормально"
-              : theme === "yellow"
-              ? "Сегодня внимательнее"
-              : theme === "red"
-              ? "Сегодня лучше отдохнуть"
-              : ""}
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            // @ts-ignore
+            size="large"
+            progressViewOffset={20}
+            progressBackgroundColor={
+              theme === "green" ? "#477304" : theme === "yellow" ? "#9C4A1A" : theme === "red" ? "#9d0208" : "transparent"
+            }
+            colors={["white"]}
+          />
+        }
+        style={styles.scroll}
+      >
+        <View style={styles.titleWrapper}>
+          <Text style={styles.city}>
+            {city}, {country}
           </Text>
-        </ElevationCard>
-      </TouchableOpacity>
+          <Text style={styles.date}>{date}</Text>
+        </View>
+        <TouchableOpacity style={styles.wrapper} onPress={() => router.push("/details")}>
+          <ElevationCard theme={theme} transparency={1} gradient>
+            <Text style={styles.font22}>
+              {theme === "green"
+                ? "Сегодня всё нормально"
+                : theme === "yellow"
+                ? "Сегодня внимательнее"
+                : theme === "red"
+                ? "Сегодня лучше отдохнуть"
+                : ""}
+            </Text>
+          </ElevationCard>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -110,5 +133,9 @@ const styles = ScaledSheet.create({
     fontSize: scale(22),
     textAlign: "center",
     padding: 10,
+  },
+  scroll: {
+    width: "100%",
+    height: "100%",
   },
 });
