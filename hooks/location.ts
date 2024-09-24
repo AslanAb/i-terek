@@ -1,63 +1,50 @@
-import { countryNameByISOCodes } from "@/constants/country_name_by_iso_codes";
-import { getCity, getCurrentLocation } from "@/services/location";
+import { getCityAndCountry, getCurrentLocation } from "@/services/location";
+import { checkIfHourPassed } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
-import { useMMKVBoolean, useMMKVString } from "react-native-mmkv";
+import { useMMKVString } from "react-native-mmkv";
 
 const useLocation = () => {
   const [city, setCity] = useMMKVString("city");
   const [country, setCountry] = useMMKVString("country");
   const [locationDate, setLocationDate] = useMMKVString("locationDate");
-  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  const [location, setLocation] = useState<{ latitude: number, longitude: number }>();
   const [isLocationError, setIsLocationError] = useState(false);
   const [isLocationLoading, setIsLocationLoading] = useState(true);
-  const [isLoading, setIsLoading] = useMMKVBoolean("isLoading");
 
+  useEffect(() => {
+    const ifHourPassed = checkIfHourPassed(locationDate);
+    if (ifHourPassed) {
+      fetchLocationData();
+    } else {
+      setIsLocationLoading(false);
+    }
+  }, []);
+  
   const fetchLocationData = useCallback(async () => {
     try {
       const locationData = await getCurrentLocation();
       if (locationData instanceof Error) {
         throw new Error();
       }
-      const cityAndCountry = await getCity(locationData.latitude, locationData.longitude);
+
+      const cityAndCountry = await getCityAndCountry(locationData.latitude, locationData.longitude);
       if (cityAndCountry instanceof Error) {
         throw new Error();
       }
+
       setLocation(locationData);
       setCity(cityAndCountry.city);
-      setCountry(countryNameByISOCodes(cityAndCountry.country));
+      setCountry(cityAndCountry.country);
       setLocationDate(new Date().toDateString());
     } catch (error) {
-      console.error("🚨error --->", error);
+      console.error("error get location");
       setIsLocationError(true);
     } finally {
       setIsLocationLoading(false);
-      console.log("location fetched")
     }
   }, []);
 
-  const checkIfHourPassed = (currentDate: Date, locationDateString: string | undefined): boolean => {
-    if (!locationDateString) return true;
-    const oldLocationDate = new Date(locationDateString);
-    const differenceInMilliseconds = currentDate.getTime() - oldLocationDate.getTime();
-    const differenceInHours = differenceInMilliseconds / (1000 * 60);
-    if (differenceInHours > 60) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  useEffect(() => {
-    const time = checkIfHourPassed(new Date(), locationDate);
-    if (time) {
-      setIsLoading(true);
-      fetchLocationData();
-    } else {
-      setIsLoading(false);
-      setIsLocationLoading(false);
-    }
-  }, []);
   return { location, isLocationError, isLocationLoading };
 };
 
-export { useLocation };
+export default useLocation;

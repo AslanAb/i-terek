@@ -6,21 +6,22 @@ import { useMMKVBoolean, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useCallback, useEffect, useState } from "react";
 import { getDate } from "@/utils";
-import { useLocation } from "@/hooks/location";
-import { useGetAndSetWeather } from "@/hooks/weather";
-import { useTheme } from "@/hooks/theme";
 import Spinner from "react-native-loading-spinner-overlay";
+import useLocation from "@/hooks/location";
+import useGetAndSetWeather from "@/hooks/weather";
+import useTheme from "@/hooks/theme";
 
 export default function Home() {
-  const location = useLocation();
-  const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(location.location, location.isLocationError, location.isLocationLoading);
-  const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
   const [theme, setTheme] = useMMKVString("theme");
   const [city, setCity] = useMMKVString("city");
   const [country, setCountry] = useMMKVString("country");
   const [date, setDate] = useState("");
-  const [isLoading, setIsLoading] = useMMKVBoolean("isLoading");
   const [refreshing, setRefreshing] = useState(false);
+
+  const { location, isLocationError, isLocationLoading } = useLocation();
+  const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(location, isLocationError, isLocationLoading);
+  const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
+
   useFocusEffect(
     useCallback(() => {
       const formattedDate = getDate();
@@ -28,15 +29,9 @@ export default function Home() {
     }, [])
   );
 
-  useEffect(() => {
-    if (!isThemeLoading) {
-      setIsLoading(false);
-    }
-  }, [isThemeLoading]);
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    
+
     setRefreshing(false);
   }, []);
 
@@ -53,9 +48,18 @@ export default function Home() {
       </SafeAreaView>
     );
   }
+  if (isThemeError) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <View>
+          <Text style={{ color: "red" }}>Ошибка</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.center}>
+    <SafeAreaView style={{flex: 1}}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -71,6 +75,7 @@ export default function Home() {
           />
         }
         style={styles.scroll}
+        contentContainerStyle={styles.center}
       >
         <View style={styles.titleWrapper}>
           <Text style={styles.city}>

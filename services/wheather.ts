@@ -103,9 +103,9 @@ const getWeatherAllIn = async (latitude: number, longitude: number) => {
       kp_index: kp_index[kp_index.length - 1][1],
       solar_activity: solarActivity[0].current_class,
     };
+    console.log('get weather');
     return currentWeather;
   } catch (error) {
-    console.error("  --->", error);
     return new Error("Can't get current weather");
   }
 };

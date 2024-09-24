@@ -1,4 +1,4 @@
-const countryISOCodes: { [key: string]: string } = {
+export const countryISOCodes: { [key: string]: string } = {
   AU: "Австралия",
   AT: "Австрия",
   AZ: "Азербайджан",
@@ -249,9 +249,4 @@ const countryISOCodes: { [key: string]: string } = {
   JM: "Ямайка",
   JP: "Япония",
   XK: "Косово",
-};
-
-export const countryNameByISOCodes = (isoCode: string) => {
-  const countryName = countryISOCodes[isoCode];
-  return countryName;
 };

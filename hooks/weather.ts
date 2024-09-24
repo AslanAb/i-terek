@@ -1,25 +1,23 @@
 import { getWeatherAllIn } from "@/services/wheather";
 import { ILocation, IWeather } from "@/types";
+import { checkIfHourPassed } from "@/utils";
 import { useEffect, useState } from "react";
-import { useMMKVBoolean, useMMKVObject } from "react-native-mmkv";
+import { useMMKVObject } from "react-native-mmkv";
 
-const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, isLocationLoading: boolean) => {
+const useGetAndSetWeather = (location: ILocation | undefined, isLocationError: boolean, isLocationLoading: boolean) => {
   const [weather, setWeather] = useMMKVObject<IWeather>("weather");
   const [isWeatherLoading, setIsWeatherLoading] = useState(true);
   const [isWeatherError, setIsWeatherError] = useState(false);
 
   const fetchWeatherData = async () => {
     try {
-      if (isLocationError) {
+      if (isLocationError || !location) {
         throw new Error();
       }
       if (weather) {
-        const dtDate: Date = new Date(weather.dt * 1000);
-        const currentTime: Date = new Date();
-        const differenceInMinutes: number = (currentTime.getTime() - dtDate.getTime()) / (1000 * 60);
-
-        if (differenceInMinutes >= 60) {
-          const weatherData = await getWeatherAllIn(latAndLong.latitude, latAndLong.longitude);
+        const ifHourPassed = checkIfHourPassed((weather.dt * 1000).toString());
+        if (ifHourPassed) {
+          const weatherData = await getWeatherAllIn(location.latitude, location.longitude);
           if (weatherData instanceof Error) {
             setWeather(undefined);
             throw new Error();
@@ -27,13 +25,14 @@ const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, is
           return setWeather(weatherData);
         }
       } else {
-        const weatherData = await getWeatherAllIn(latAndLong.latitude, latAndLong.longitude);
+        const weatherData = await getWeatherAllIn(location.latitude, location.longitude);
         if (weatherData instanceof Error) {
           throw new Error();
         }
         return setWeather(weatherData);
       }
     } catch (error) {
+      console.error("error get weather");
       setIsWeatherError(true);
     } finally {
       setIsWeatherLoading(false);
@@ -44,13 +43,14 @@ const useGetAndSetWeather = (latAndLong: ILocation, isLocationError: boolean, is
     if (isLocationError) {
       setIsWeatherLoading(false);
       setIsWeatherError(true);
+      return
     }
-    if (!isLocationLoading) {
+    if (!isLocationLoading && location) {
       fetchWeatherData();
     }
-  }, [isLocationError, isLocationLoading]);
+  }, [isLocationLoading, location, isLocationError]);
 
   return { isWeatherLoading, isWeatherError };
 };
 
-export { useGetAndSetWeather };
+export default useGetAndSetWeather;
