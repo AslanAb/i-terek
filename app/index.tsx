@@ -1,15 +1,17 @@
-import { View, Text, TouchableOpacity, RefreshControl, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, RefreshControl, ScrollView, Alert } from "react-native";
 import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
-import { useMMKVBoolean, useMMKVString } from "react-native-mmkv";
+import { useMMKVBoolean, useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useCallback, useEffect, useState } from "react";
-import { getDate } from "@/utils";
+import { getDate, refreshAll } from "@/utils";
 import Spinner from "react-native-loading-spinner-overlay";
 import useLocation from "@/hooks/location";
 import useGetAndSetWeather from "@/hooks/weather";
 import useTheme from "@/hooks/theme";
+import { IExtremes, INormals, IWeather, IWeightOfVariables } from "@/types";
+import { defaultExtremes, defaultNormals, defaultVariables } from "@/constants/settings";
 
 export default function Home() {
   const [theme, setTheme] = useMMKVString("theme");
@@ -22,6 +24,12 @@ export default function Home() {
   const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(location, isLocationError, isLocationLoading);
   const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
 
+  const [weather, setWeather] = useMMKVObject<IWeather>("weather");
+  const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
+  const [normals, setNormals] = useMMKVObject<INormals>("normals");
+  const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
+  const [locationDate, setLocationDate] = useMMKVNumber("locationDate");
+
   useFocusEffect(
     useCallback(() => {
       const formattedDate = getDate();
@@ -29,9 +37,27 @@ export default function Home() {
     }, [])
   );
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-
+    if (!weightOfVariables || !normals || !extremes) {
+      setWeightOfVariables(defaultVariables);
+      setNormals(defaultNormals);
+      setExtremes(defaultExtremes);
+    }
+    try {
+      const refreshedData = await refreshAll(weather, normals, extremes, weightOfVariables)
+      if (refreshedData instanceof Error) {
+        throw new Error();
+      }
+      setCity(refreshedData.cityAndCountry.city);
+      setCountry(refreshedData.cityAndCountry.country);
+      setLocationDate(new Date().getTime());
+      setWeather(refreshedData.weatherData);
+      setTheme(refreshedData.appTheme)
+      Alert.alert("Данные успешно обновлены")
+    } catch (error) {
+      Alert.alert("Ошибка при обновлении", "попробуйте снова!")
+    }
     setRefreshing(false);
   }, []);
 
@@ -59,7 +85,7 @@ export default function Home() {
   }
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -89,10 +115,10 @@ export default function Home() {
               {theme === "green"
                 ? "Сегодня всё нормально"
                 : theme === "yellow"
-                ? "Сегодня внимательнее"
-                : theme === "red"
-                ? "Сегодня лучше отдохнуть"
-                : ""}
+                  ? "Сегодня внимательнее"
+                  : theme === "red"
+                    ? "Сегодня лучше отдохнуть"
+                    : ""}
             </Text>
           </ElevationCard>
         </TouchableOpacity>

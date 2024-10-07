@@ -98,12 +98,11 @@ const getWeatherAllIn = async (latitude: number, longitude: number) => {
       pressure: Math.round(pressure).toFixed(0),
       pressureChangingIn6Hours: Math.round(pressure - pressure6HoursBefore).toFixed(0),
       wind: Math.round(currentWeatherAll.wind.speed).toFixed(0),
-      dt: currentWeatherAll.dt,
+      dt: new Date().getTime(),
       pm2_5: airPolution.list[0].components.pm2_5,
       kp_index: kp_index[kp_index.length - 1][1],
       solar_activity: solarActivity[0].current_class,
     };
-    console.log('get weather');
     return currentWeather;
   } catch (error) {
     return new Error("Can't get current weather");

@@ -1,12 +1,12 @@
 import { getCityAndCountry, getCurrentLocation } from "@/services/location";
 import { checkIfHourPassed } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
-import { useMMKVString } from "react-native-mmkv";
+import { useMMKVNumber, useMMKVString } from "react-native-mmkv";
 
 const useLocation = () => {
   const [city, setCity] = useMMKVString("city");
   const [country, setCountry] = useMMKVString("country");
-  const [locationDate, setLocationDate] = useMMKVString("locationDate");
+  const [locationDate, setLocationDate] = useMMKVNumber("locationDate");
   const [location, setLocation] = useState<{ latitude: number, longitude: number }>();
   const [isLocationError, setIsLocationError] = useState(false);
   const [isLocationLoading, setIsLocationLoading] = useState(true);
@@ -35,7 +35,7 @@ const useLocation = () => {
       setLocation(locationData);
       setCity(cityAndCountry.city);
       setCountry(cityAndCountry.country);
-      setLocationDate(new Date().toDateString());
+      setLocationDate(new Date().getTime());
     } catch (error) {
       console.error("error get location");
       setIsLocationError(true);

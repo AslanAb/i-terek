@@ -15,7 +15,7 @@ const useGetAndSetWeather = (location: ILocation | undefined, isLocationError: b
         throw new Error();
       }
       if (weather) {
-        const ifHourPassed = checkIfHourPassed((weather.dt * 1000).toString());
+        const ifHourPassed = checkIfHourPassed(weather.dt);
         if (ifHourPassed) {
           const weatherData = await getWeatherAllIn(location.latitude, location.longitude);
           if (weatherData instanceof Error) {
@@ -27,12 +27,12 @@ const useGetAndSetWeather = (location: ILocation | undefined, isLocationError: b
       } else {
         const weatherData = await getWeatherAllIn(location.latitude, location.longitude);
         if (weatherData instanceof Error) {
+          setWeather(undefined);
           throw new Error();
         }
         return setWeather(weatherData);
       }
     } catch (error) {
-      console.error("error get weather");
       setIsWeatherError(true);
     } finally {
       setIsWeatherLoading(false);
