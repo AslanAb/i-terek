@@ -33,6 +33,7 @@ const useGetAndSetWeather = (location: ILocation | undefined, isLocationError: b
         return setWeather(weatherData);
       }
     } catch (error) {
+      setIsWeatherLoading(false);
       setIsWeatherError(true);
     } finally {
       setIsWeatherLoading(false);
