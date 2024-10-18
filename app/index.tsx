@@ -5,13 +5,14 @@ import { router, useFocusEffect } from "expo-router";
 import { useMMKVBoolean, useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useCallback, useEffect, useState } from "react";
-import { getDate, refreshAll } from "@/utils";
+import { getDate } from "@/utils";
 import Spinner from "react-native-loading-spinner-overlay";
 import useLocation from "@/hooks/location";
 import useGetAndSetWeather from "@/hooks/weather";
 import useTheme from "@/hooks/theme";
 import { IExtremes, INormals, IWeather, IWeightOfVariables } from "@/types";
 import { defaultExtremes, defaultNormals, defaultVariables } from "@/constants/settings";
+import { refreshAll } from "@/utils/refresh";
 
 export default function Home() {
   const [theme, setTheme] = useMMKVString("theme");
@@ -20,15 +21,16 @@ export default function Home() {
   const [date, setDate] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 
-  const { location, isLocationError, isLocationLoading } = useLocation();
-  const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(location, isLocationError, isLocationLoading);
-  const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
-
   const [weather, setWeather] = useMMKVObject<IWeather>("weather");
   const [weightOfVariables, setWeightOfVariables] = useMMKVObject<IWeightOfVariables>("weightOfVariables");
   const [normals, setNormals] = useMMKVObject<INormals>("normals");
   const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
   const [locationDate, setLocationDate] = useMMKVNumber("locationDate");
+
+  const { isLocationError, isLocationLoading } = useLocation();
+  console.log('isLocationLoading: ', isLocationLoading);
+  const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(isLocationError, isLocationLoading);
+  const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
 
   useFocusEffect(
     useCallback(() => {

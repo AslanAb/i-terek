@@ -1,19 +1,20 @@
 import { getCityAndCountry, getCurrentLocation } from "@/services/location";
 import { checkIfHourPassed } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
-import { useMMKVNumber, useMMKVString } from "react-native-mmkv";
+import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
 
 const useLocation = () => {
   const [city, setCity] = useMMKVString("city");
   const [country, setCountry] = useMMKVString("country");
   const [locationDate, setLocationDate] = useMMKVNumber("locationDate");
-  const [location, setLocation] = useState<{ latitude: number, longitude: number }>();
+  const [location, setLocation] = useMMKVObject<{ latitude: number, longitude: number }>("location");
   const [isLocationError, setIsLocationError] = useState(false);
   const [isLocationLoading, setIsLocationLoading] = useState(true);
 
   useEffect(() => {
     const ifHourPassed = checkIfHourPassed(locationDate);
-    if (ifHourPassed) {
+    console.log('ifHourPassed: ', ifHourPassed);
+    if (ifHourPassed || !location) {
       fetchLocationData();
     } else {
       setIsLocationLoading(false);
@@ -26,11 +27,13 @@ const useLocation = () => {
       if (locationData instanceof Error) {
         throw new Error();
       }
+      console.log("locationData")
 
       const cityAndCountry = await getCityAndCountry(locationData.latitude, locationData.longitude);
       if (cityAndCountry instanceof Error) {
         throw new Error();
       }
+      console.log('cityAndCountry');
 
       setLocation(locationData);
       setCity(cityAndCountry.city);
@@ -44,7 +47,7 @@ const useLocation = () => {
     }
   }, []);
 
-  return { location, isLocationError, isLocationLoading };
+  return { isLocationError, isLocationLoading };
 };
 
 export default useLocation;

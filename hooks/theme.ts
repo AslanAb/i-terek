@@ -29,6 +29,7 @@ const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean })
     if (!props.isWeatherLoading && weather && normals && extremes && weightOfVariables) {
       const appTheme = setThemeFn(weather, normals, extremes, weightOfVariables);
       if (appTheme) {
+        console.log('appTheme');
         setTheme(appTheme);
         setIsThemeLoading(false);
       } else {
