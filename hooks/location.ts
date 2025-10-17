@@ -25,22 +25,23 @@ const useLocation = () => {
     try {
       const locationData = await getCurrentLocation();
       if (locationData instanceof Error) {
-        throw new Error();
+        throw locationData;
       }
-      console.log("locationData")
+      console.log('locationData');
+
+      setLocation(locationData);
 
       const cityAndCountry = await getCityAndCountry(locationData.latitude, locationData.longitude);
       if (cityAndCountry instanceof Error) {
-        throw new Error();
+        throw cityAndCountry;
       }
       console.log('cityAndCountry');
 
-      setLocation(locationData);
       setCity(cityAndCountry.city);
       setCountry(cityAndCountry.country);
       setLocationDate(new Date().getTime());
     } catch (error) {
-      console.error("error get location");
+      console.error('error get location', error);
       setIsLocationError(true);
     } finally {
       setIsLocationLoading(false);
