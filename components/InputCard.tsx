@@ -11,6 +11,7 @@ export default function InputCard(props: {
   value: string;
   onBlur?: any;
   onChange?: any;
+  disabled?: boolean;
 }) {
   return (
     <ElevationCard theme={props.theme} p={15} w={"100%"} transparency={1} h={props.h} gradient>
@@ -35,26 +36,65 @@ export default function InputCard(props: {
           {props.name === "air pollution" && "Загрязнение воздуха"}
           {props.name === "wind speed" && "Скорость ветра"}
         </Text>
-        <TextInput
-          value={props.value || ""}
-          onChangeText={props.onChange}
-          keyboardType="numeric"
-          onBlur={props.onBlur}
-          style={[
-            styles.input,
-            {
-              backgroundColor:
-                props.theme === "green"
-                  ? "rgb(33, 37, 23)"
-                  : props.theme === "yellow"
-                  ? "#582f0e"
-                  : props.theme === "red"
-                  ? "#370617"
-                  : "blue",
-            },
-          ]}
-          selectionColor={"white"}
-        />
+        <View style={styles.input}>
+          {props.disabled ? (
+            <View
+              style={{
+                backgroundColor:
+                  props.theme === "green"
+                    ? "rgb(33, 37, 23)"
+                    : props.theme === "yellow"
+                    ? "#582f0e"
+                    : props.theme === "red"
+                    ? "#370617"
+                    : "blue",
+                opacity: 0.6,
+                borderRadius: 10,
+                padding: 5,
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: scale(30),
+              }}
+            >
+              <Text style={{
+                color: "white",
+                opacity: 0.6,
+                fontFamily: "Podkova-Regular",
+                fontSize: scale(20),
+                textAlign: "center"
+              }}>
+                {props.value || ""}
+              </Text>
+            </View>
+          ) : (
+            <TextInput
+              value={props.value || ""}
+              onChangeText={props.onChange}
+              keyboardType="numeric"
+              onBlur={props.onBlur}
+              editable={true}
+              style={{
+                backgroundColor:
+                  props.theme === "green"
+                    ? "rgb(33, 37, 23)"
+                    : props.theme === "yellow"
+                    ? "#582f0e"
+                    : props.theme === "red"
+                    ? "#370617"
+                    : "blue",
+                opacity: 1,
+                borderRadius: 10,
+                padding: 5,
+                color: "white",
+                fontFamily: "Podkova-Regular",
+                fontSize: scale(20),
+                textAlign: "center",
+                flex: 1,
+              }}
+              selectionColor={"white"}
+            />
+          )}
+        </View>
       </View>
     </ElevationCard>
   );

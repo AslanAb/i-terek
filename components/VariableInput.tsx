@@ -12,9 +12,10 @@ const VariableInput = (props: {
   theme: string | undefined;
   inputName: IDetailsText["name"];
   formName: keyof IWeightOfVariables;
+  disabled?: boolean;
 }) => {
   return (
-    <View style={{ width: "100%" }}>
+    <View style={{ width: "100%", minHeight: 90 }}>
       <Controller
         control={props.control}
         rules={{
@@ -31,7 +32,15 @@ const VariableInput = (props: {
           },
         }}
         render={({ field: { onChange, onBlur, value } }) => (
-          <InputCard onBlur={onBlur} onChange={onChange} value={value} theme={props.theme} name={props.inputName} h={90} />
+          <InputCard
+            onBlur={onBlur}
+            onChange={onChange}
+            value={value}
+            theme={props.theme}
+            name={props.inputName}
+            h={90}
+            disabled={props.disabled}
+          />
         )}
         name={props.formName}
       />

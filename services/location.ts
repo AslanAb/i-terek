@@ -2,31 +2,35 @@ import axios from "axios";
 import * as Location from "expo-location";
 import API from "@/api";
 import { countryNameByISOCodes } from "@/utils";
+import { IResult } from "@/types";
 
-const getCurrentLocation = async () => {
+const getCurrentLocation = async (): Promise<IResult<{ latitude: number, longitude: number }>> => {
   try {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      return new Error("Permission to access location was denied");
+      return { success: false, error: "Permission to access location was denied" };
     }
     const currentLocation = await Location.getCurrentPositionAsync({});
     if (!currentLocation?.coords) {
-      return new Error("Can't get current coordinates");
+      return { success: false, error: "Can't get current coordinates" };
     }
     console.log('get lat & lon: ', currentLocation.coords.latitude, currentLocation.coords.longitude);
     return {
-      latitude: currentLocation.coords.latitude,
-      longitude: currentLocation.coords.longitude,
+      success: true,
+      data: {
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      }
     };
   } catch (error) {
-    return new Error("Can't get current coordinates");
+    return { success: false, error: `Can't get current coordinates: ${error instanceof Error ? error.message : 'Unknown error'}` };
   }
 };
 
-const getCityAndCountry = async (latitude: number, longitude: number) => {
+const getCityAndCountry = async (latitude: number, longitude: number): Promise<IResult<{ city: string, country: string }>> => {
   try {
     if (!API.openweathermapAppid) {
-      return new Error("OpenWeather API key is missing");
+      return { success: false, error: "OpenWeather API key is missing" };
     }
 
     const params = {
@@ -38,7 +42,7 @@ const getCityAndCountry = async (latitude: number, longitude: number) => {
 
     const response = await axios.get(API.openweathermapUrl + "/geo/1.0/reverse", { params });
     if (response.status !== 200 || !Array.isArray(response.data) || response.data.length === 0) {
-      return new Error("Can't get city");
+      return { success: false, error: "Can't get city data" };
     }
 
     const first = response.data[0];
@@ -47,16 +51,19 @@ const getCityAndCountry = async (latitude: number, longitude: number) => {
     const cityRu = first?.local_names?.ru || first?.name;
 
     if (!cityRu || !countryRu) {
-      return new Error("Can't resolve city or country");
+      return { success: false, error: "Can't resolve city or country" };
     }
 
     console.log('get city: ', cityRu);
     return {
-      city: cityRu,
-      country: countryRu,
+      success: true,
+      data: {
+        city: cityRu,
+        country: countryRu,
+      }
     };
   } catch (error) {
-    return new Error("Can't get city");
+    return { success: false, error: `Can't get city: ${error instanceof Error ? error.message : 'Unknown error'}` };
   }
 };
 

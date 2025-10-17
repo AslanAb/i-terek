@@ -126,3 +126,9 @@ export interface IDetailsText {
   title: string;
   description: string;
 }
+
+export interface IResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}

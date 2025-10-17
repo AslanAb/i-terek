@@ -7,26 +7,35 @@ export const refreshAll = async (
   weather: IWeather | undefined,
   normals: INormals | undefined,
   extremes: IExtremes | undefined,
-  weightOfVariables: IWeightOfVariables | undefined
+  weightOfVariables: IWeightOfVariables | undefined,
+  forceRefresh: boolean = false
 ) => {
   try {
-    const locationData = await getCurrentLocation();
-    if (locationData instanceof Error) {
-      throw new Error();
+    const locationResult = await getCurrentLocation();
+    if (!locationResult.success) {
+      throw new Error(locationResult.error);
     }
 
-    const cityAndCountry = await getCityAndCountry(locationData.latitude, locationData.longitude);
-    if (cityAndCountry instanceof Error) {
-      throw new Error();
+    const cityAndCountryResult = await getCityAndCountry(locationResult.data!.latitude, locationResult.data!.longitude);
+    if (!cityAndCountryResult.success) {
+      throw new Error(cityAndCountryResult.error);
     }
 
-    const weatherData = await getWeatherAllIn(locationData.latitude, locationData.longitude);
-    if (weatherData instanceof Error) {
-      throw new Error();
+    const weatherResult = await getWeatherAllIn(locationResult.data!.latitude, locationResult.data!.longitude);
+    if (!weatherResult.success) {
+      throw new Error(weatherResult.error);
     }
-    const appTheme = setThemeFn(weatherData, normals, extremes, weightOfVariables);
-    return { cityAndCountry, weatherData, appTheme };
+
+    const appTheme = setThemeFn(weatherResult.data!, normals, extremes, weightOfVariables);
+    return {
+      success: true,
+      data: {
+        cityAndCountry: cityAndCountryResult.data!,
+        weatherData: weatherResult.data!,
+        appTheme
+      }
+    };
   } catch (error) {
-    return new Error("Can't get current weather");
+    return { success: false, error: `Can't refresh data: ${error instanceof Error ? error.message : 'Unknown error'}` };
   }
 };

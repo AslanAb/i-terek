@@ -1,15 +1,17 @@
-import { View, Text, TouchableOpacity, RefreshControl, ScrollView, Alert } from "react-native";
+import { View, Text, TouchableOpacity, RefreshControl, ScrollView } from "react-native";
 import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
-import { useMMKVBoolean, useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
 import ElevationCard from "@/components/ElevationCard";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { getDate } from "@/utils";
 import Spinner from "react-native-loading-spinner-overlay";
 import useLocation from "@/hooks/location";
 import useGetAndSetWeather from "@/hooks/weather";
 import useTheme from "@/hooks/theme";
+import { useAlert } from "@/hooks/useAlert";
+import CustomAlert from "@/components/CustomAlert";
 import { IExtremes, INormals, IWeather, IWeightOfVariables } from "@/types";
 import { defaultExtremes, defaultNormals, defaultVariables } from "@/constants/settings";
 import { refreshAll } from "@/utils/refresh";
@@ -28,9 +30,10 @@ export default function Home() {
   const [locationDate, setLocationDate] = useMMKVNumber("locationDate");
 
   const { isLocationError, isLocationLoading } = useLocation();
-  console.log('isLocationLoading: ', isLocationLoading);
   const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(isLocationError, isLocationLoading);
   const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
+
+  const { isVisible, alertConfig, hideAlert, showSuccess, showError } = useAlert();
 
   useFocusEffect(
     useCallback(() => {
@@ -47,21 +50,24 @@ export default function Home() {
       setExtremes(defaultExtremes);
     }
     try {
-      const refreshedData = await refreshAll(weather, normals, extremes, weightOfVariables)
-      if (refreshedData instanceof Error) {
-        throw new Error();
+      // При принудительном обновлении (pull-to-refresh) игнорируем кеш
+      const refreshResult = await refreshAll(weather, normals, extremes, weightOfVariables, true)
+      if (!refreshResult.success) {
+        throw new Error(refreshResult.error);
       }
-      setCity(refreshedData.cityAndCountry.city);
-      setCountry(refreshedData.cityAndCountry.country);
+      const refreshedData = refreshResult.data;
+      setCity(refreshedData?.cityAndCountry?.city);
+      setCountry(refreshedData?.cityAndCountry?.country);
       setLocationDate(new Date().getTime());
-      setWeather(refreshedData.weatherData);
-      setTheme(refreshedData.appTheme)
-      Alert.alert("Данные успешно обновлены")
+      setWeather(refreshedData?.weatherData);
+      setTheme(refreshedData?.appTheme)
+      showSuccess("Данные успешно обновлены")
     } catch (error) {
-      Alert.alert("Ошибка при обновлении", "попробуйте снова!")
+      console.error('Refresh error:', error);
+      showError("Ошибка при обновлении", "попробуйте снова!")
     }
     setRefreshing(false);
-  }, []);
+  }, [weightOfVariables, normals, extremes, weather]);
 
   if (isThemeLoading) {
     return (
@@ -125,6 +131,15 @@ export default function Home() {
           </ElevationCard>
         </TouchableOpacity>
       </ScrollView>
+
+      <CustomAlert
+        visible={isVisible}
+        title={alertConfig?.title || ''}
+        message={alertConfig?.message}
+        theme={theme}
+        type={alertConfig?.type}
+        onClose={hideAlert}
+      />
     </SafeAreaView>
   );
 }

@@ -23,6 +23,14 @@ export const checkIfHourPassed = (oldDate: number | undefined): boolean => {
   }
 };
 
+export const checkIfSixHoursPassed = (oldDate: number | undefined): boolean => {
+  if (!oldDate) return true;
+  const currentDate = new Date();
+  const differenceInMilliseconds = currentDate.getTime() - oldDate;
+  const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
+  return differenceInHours > 6;
+};
+
 const splitString = (input: string): { letterPart: string; numberPart: number } | null => {
   const match = input.match(/^([A-Za-z]+)([\d.]+)$/);
   if (match) {

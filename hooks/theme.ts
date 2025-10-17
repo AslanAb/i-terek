@@ -13,11 +13,13 @@ const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean })
   const [isThemeLoading, setIsThemeLoading] = useState(true);
   const [isThemeError, setIsThemeError] = useState(false);
 
-  if (!weightOfVariables || !normals || !extremes) {
-    setWeightOfVariables(defaultVariables);
-    setNormals(defaultNormals);
-    setExtremes(defaultExtremes);
-  }
+  useEffect(() => {
+    if (!weightOfVariables || !normals || !extremes) {
+      setWeightOfVariables(defaultVariables);
+      setNormals(defaultNormals);
+      setExtremes(defaultExtremes);
+    }
+  }, [weightOfVariables, normals, extremes]);
 
   useEffect(() => {
     if (props.isWeatherError) {
@@ -29,7 +31,6 @@ const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean })
     if (!props.isWeatherLoading && weather && normals && extremes && weightOfVariables) {
       const appTheme = setThemeFn(weather, normals, extremes, weightOfVariables);
       if (appTheme) {
-        console.log('appTheme');
         setTheme(appTheme);
         setIsThemeLoading(false);
       } else {

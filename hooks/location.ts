@@ -1,6 +1,7 @@
 import { getCityAndCountry, getCurrentLocation } from "@/services/location";
-import { checkIfHourPassed } from "@/utils";
-import { useCallback, useEffect, useState } from "react";
+import { checkIfSixHoursPassed } from "@/utils";
+import { useCallback, useEffect, useState, useRef } from "react";
+import { useFocusEffect } from "expo-router";
 import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
 
 const useLocation = () => {
@@ -10,41 +11,56 @@ const useLocation = () => {
   const [location, setLocation] = useMMKVObject<{ latitude: number, longitude: number }>("location");
   const [isLocationError, setIsLocationError] = useState(false);
   const [isLocationLoading, setIsLocationLoading] = useState(true);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
-    const ifHourPassed = checkIfHourPassed(locationDate);
-    console.log('ifHourPassed: ', ifHourPassed);
-    if (ifHourPassed || !location) {
+    const ifSixHoursPassed = checkIfSixHoursPassed(locationDate);
+    if (ifSixHoursPassed || !location) {
       fetchLocationData();
     } else {
       setIsLocationLoading(false);
     }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const ifSixHoursPassed = checkIfSixHoursPassed(locationDate);
+      if (ifSixHoursPassed && !isFetchingRef.current) {
+        fetchLocationData();
+      }
+    }, [locationDate])
+  );
   
   const fetchLocationData = useCallback(async () => {
+    if (isFetchingRef.current) {
+      return;
+    }
+
+    isFetchingRef.current = true;
+
     try {
-      const locationData = await getCurrentLocation();
-      if (locationData instanceof Error) {
-        throw locationData;
+      const locationResult = await getCurrentLocation();
+      if (!locationResult.success || !locationResult.data) {
+        throw new Error(locationResult.error);
       }
-      console.log('locationData');
 
-      setLocation(locationData);
+      setLocation(locationResult.data);
 
-      const cityAndCountry = await getCityAndCountry(locationData.latitude, locationData.longitude);
-      if (cityAndCountry instanceof Error) {
-        throw cityAndCountry;
+      const cityAndCountryResult = await getCityAndCountry(locationResult.data.latitude, locationResult.data.longitude);
+      if (!cityAndCountryResult.success || !cityAndCountryResult.data) {
+        throw new Error(cityAndCountryResult.error);
       }
       console.log('cityAndCountry');
 
-      setCity(cityAndCountry.city);
-      setCountry(cityAndCountry.country);
+      setCity(cityAndCountryResult.data.city);
+      setCountry(cityAndCountryResult.data.country);
       setLocationDate(new Date().getTime());
     } catch (error) {
       console.error('error get location', error);
       setIsLocationError(true);
     } finally {
       setIsLocationLoading(false);
+      isFetchingRef.current = false;
     }
   }, []);
 
