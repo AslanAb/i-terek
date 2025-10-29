@@ -14,6 +14,7 @@ export default function Input2Card(props: {
   onChange?: any;
   formName: keyof INormals | keyof IExtremes;
   displayOnlyMax?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <ElevationCard theme={props.theme} p={15} w={"100%"} transparency={1} h={props.h} gradient>
@@ -39,7 +40,7 @@ export default function Input2Card(props: {
           {props.name === "wind speed" && "Скорость ветра"}
         </Text>
         {!props.displayOnlyMax ? (
-          <TextInput
+          !props.disabled ? <TextInput
             value={props.value?.from || ""}
             onChangeText={(text) => props.onChange({ ...props.value, from: text })}
             keyboardType="numeric"
@@ -57,12 +58,10 @@ export default function Input2Card(props: {
               },
             ]}
             selectionColor={"white"}
-          />
-        ) : (
-          <TextInput
-            style={[
-              styles.input2,
-              {
+            editable={!props.disabled}
+          /> : 
+          <View
+              style={{
                 backgroundColor:
                   props.theme === "green"
                     ? "rgb(33, 37, 23)"
@@ -71,13 +70,60 @@ export default function Input2Card(props: {
                     : props.theme === "red"
                     ? "#370617"
                     : "blue",
-              },
-            ]}
-            editable={false}
-          />
+                opacity: 1,
+                borderRadius: 10,
+                padding: 5,
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: scale(35),
+                maxHeight: scale(35),
+                flex: 2,
+            }}
+            >
+              <Text style={{
+                color: "white",
+                opacity: 1,
+                fontFamily: "Podkova-Regular",
+                fontSize: scale(20),
+                textAlign: "center"
+              }}>
+                {props.value?.from || ""}
+              </Text>
+        </View>
+        ) : (
+          <View
+              style={{
+                backgroundColor:
+                  props.theme === "green"
+                    ? "rgb(33, 37, 23)"
+                    : props.theme === "yellow"
+                    ? "#582f0e"
+                    : props.theme === "red"
+                    ? "#370617"
+                    : "blue",
+                opacity: 0.6,
+                borderRadius: 10,
+                padding: 5,
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: scale(35),
+                maxHeight: scale(35),
+                flex: 2,
+            }}
+            >
+              <Text style={{
+                color: "white",
+                opacity: 0.6,
+                fontFamily: "Podkova-Regular",
+                fontSize: scale(20),
+                textAlign: "center"
+              }}>
+                {""}
+              </Text>
+          </View>
         )}
         {props.secondInput && (
-          <TextInput
+          !props.disabled ? <TextInput
             value={props.value?.to || ""}
             onChangeText={(text) => props.onChange({ ...props.value, to: text })}
             keyboardType="numeric"
@@ -95,7 +141,37 @@ export default function Input2Card(props: {
               },
             ]}
             selectionColor={"white"}
-          />
+          /> : 
+          <View
+              style={{
+                backgroundColor:
+                  props.theme === "green"
+                    ? "rgb(33, 37, 23)"
+                    : props.theme === "yellow"
+                    ? "#582f0e"
+                    : props.theme === "red"
+                    ? "#370617"
+                    : "blue",
+                opacity: 1,
+                borderRadius: 10,
+                padding: 5,
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: scale(35),
+                maxHeight: scale(35),
+                flex: 2,
+            }}
+            >
+              <Text style={{
+                color: "white",
+                opacity: 1,
+                fontFamily: "Podkova-Regular",
+                fontSize: scale(20),
+                textAlign: "center"
+              }}>
+                {props.value?.to || ""}
+              </Text>
+        </View>
         )}
       </View>
     </ElevationCard>

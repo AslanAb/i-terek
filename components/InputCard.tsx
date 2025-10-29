@@ -48,17 +48,18 @@ export default function InputCard(props: {
                     : props.theme === "red"
                     ? "#370617"
                     : "blue",
-                opacity: 0.6,
+                opacity: 1,
                 borderRadius: 10,
                 padding: 5,
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: scale(30),
+                minHeight: scale(35),
+                maxHeight: scale(35),
               }}
             >
               <Text style={{
                 color: "white",
-                opacity: 0.6,
+                opacity: 1,
                 fontFamily: "Podkova-Regular",
                 fontSize: scale(20),
                 textAlign: "center"
@@ -85,6 +86,8 @@ export default function InputCard(props: {
                 opacity: 1,
                 borderRadius: 10,
                 padding: 5,
+                minHeight: scale(35),
+                maxHeight: scale(35),
                 color: "white",
                 fontFamily: "Podkova-Regular",
                 fontSize: scale(20),

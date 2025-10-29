@@ -17,6 +17,7 @@ import { defaultExtremes, defaultNormals, defaultVariables } from "@/constants/s
 import { refreshAll } from "@/utils/refresh";
 
 export default function Home() {
+  console.log("Home")
   const [theme, setTheme] = useMMKVString("theme");
   const [city, setCity] = useMMKVString("city");
   const [country, setCountry] = useMMKVString("country");

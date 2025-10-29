@@ -11,6 +11,7 @@ const getCurrentLocation = async (): Promise<IResult<{ latitude: number, longitu
       return { success: false, error: "Permission to access location was denied" };
     }
     const currentLocation = await Location.getCurrentPositionAsync({});
+
     if (!currentLocation?.coords) {
       return { success: false, error: "Can't get current coordinates" };
     }

@@ -12,6 +12,7 @@ import { useMMKVString } from "react-native-mmkv";
 const { width, height } = Dimensions.get("window");
 
 export default function Settings() {
+  console.log("Settings")
   const [theme, setTheme] = useMMKVString("theme");
   const scrollViewRef = useRef<ScrollView>(null);
   const [pagePosition, setPagePosition] = useState(0);
@@ -65,7 +66,7 @@ export default function Settings() {
           onScroll={handleScroll}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
-          style={{ minHeight: height }}
+          style={{ paddingBottom: 20 }}
         >
           <VariablesSettings />
           <NormalsSettings />

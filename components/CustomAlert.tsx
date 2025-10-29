@@ -74,9 +74,9 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
     >
       <View style={styles.overlay}>
         <View style={[styles.container, { backgroundColor: colors.background, borderColor: colors.border }]}>
-          <View style={[styles.iconContainer, { backgroundColor: colors.primary }]}>
+          {/* <View style={[styles.iconContainer, { backgroundColor: colors.primary }]}>
             <Text style={styles.icon}>{getIcon()}</Text>
-          </View>
+          </View> */}
 
           <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
 

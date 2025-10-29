@@ -38,6 +38,7 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  console.log("RootLayoutNav")
   const [theme, setTheme] = useMMKVString("theme");
 
   return (

@@ -6,21 +6,93 @@ import ElevationCard from "./ElevationCard";
 import { scale, ScaledSheet } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
 import NormalInput from "./NormalInput";
+import { useAlert } from "@/hooks/useAlert";
+import { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "expo-router";
 const { width } = Dimensions.get("window");
 
 export default function NormalsSettings() {
+  console.log("NormalsSettings");
   const [theme, setTheme] = useMMKVString("theme");
   const [normals, setNormals] = useMMKVObject<INormals>("normals");
   const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
+  const [isEditing, setIsEditing] = useState(false);
+  const [originalValues, setOriginalValues] = useState<INormals | null>(null);
+
+  const { showSuccess, showInfo } = useAlert();
+
   const {
     control,
     setValue,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: normals,
+    mode: "onChange",
   });
-  const onSubmit = (data: any) => setNormals(data);
+
+  useEffect(() => {
+    if (normals && !isEditing) {
+      reset(normals);
+    }
+  }, [normals, reset, isEditing]);
+
+  const startEditing = () => {
+    setOriginalValues(normals || null);
+    setIsEditing(true);
+  };
+
+  const cancelEditing = () => {
+    if (originalValues) {
+      reset(originalValues);
+      for (const key in originalValues) {
+        setValue(key as keyof INormals, originalValues[key as keyof INormals]);
+      }
+    }
+    setIsEditing(false);
+    setOriginalValues(null);
+    showInfo("Изменения отменены", "Возвращены предыдущие значения");
+  };
+
+  const onSubmit = (data: any) => {
+    try {
+      setNormals(data);
+      reset(data);
+      setIsEditing(false);
+      setOriginalValues(null);
+      showSuccess("Настройки сохранены", "Нормальные значения успешно обновлены");
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  };
+
+  const handleSave = () => {
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+    handleSubmit(onSubmit)();
+  };
+
+  const resetToDefaults = () => {
+    for (const key in defaultNormals) {
+      setValue(key as keyof INormals, defaultNormals[key as keyof INormals]);
+    }
+    setNormals(defaultNormals);
+    setIsEditing(false);
+    setOriginalValues(null);
+    showSuccess("Сброшено по умолчанию", "Восстановлены стандартные значения");
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (isEditing) {
+          cancelEditing();
+        }
+      };
+    }, [isEditing])
+  );
 
   return (
     <View style={styles.wrapper}>
@@ -32,6 +104,7 @@ export default function NormalsSettings() {
         formName="pressure"
         secondInput
         extremes={extremes}
+        disabled={!isEditing}
       />
       <NormalInput
         control={control}
@@ -41,6 +114,7 @@ export default function NormalsSettings() {
         formName="pressureChangingIn6Hours"
         secondInput
         extremes={extremes}
+        disabled={!isEditing}
       />
       <NormalInput
         control={control}
@@ -50,6 +124,7 @@ export default function NormalsSettings() {
         formName="solar_activity"
         secondInput
         extremes={extremes}
+        disabled={!isEditing}
       />
       <NormalInput
         control={control}
@@ -59,6 +134,7 @@ export default function NormalsSettings() {
         formName="kp_index"
         secondInput
         extremes={extremes}
+        disabled={!isEditing}
       />
       <NormalInput
         control={control}
@@ -68,6 +144,7 @@ export default function NormalsSettings() {
         formName="temp"
         secondInput
         extremes={extremes}
+        disabled={!isEditing}
       />
       <NormalInput
         control={control}
@@ -77,25 +154,46 @@ export default function NormalsSettings() {
         formName="pm2_5"
         secondInput
         extremes={extremes}
+        disabled={!isEditing}
       />
-      <NormalInput control={control} errors={errors} theme={theme} inputName="wind speed" formName="wind" secondInput extremes={extremes} />
+      <NormalInput
+        control={control}
+        errors={errors}
+        theme={theme}
+        inputName="wind speed"
+        formName="wind"
+        secondInput
+        extremes={extremes}
+        disabled={!isEditing}
+      />
       <View style={styles.center}>
-        <ElevationCard theme={theme} w={"100%"} onPress={handleSubmit(onSubmit)} gradient elevation>
-          <Text style={styles.font22}>Сохранить</Text>
-        </ElevationCard>
-        <ElevationCard
-          theme={theme}
-          w={"100%"}
-          onPress={() => {
-            for (const key in defaultNormals) {
-              setValue(key as keyof INormals, defaultNormals[key as keyof INormals]);
-            }
-          }}
-          gradient
-          elevation
-        >
-          <Text style={styles.font22}>Вернуть значения по умолчанию</Text>
-        </ElevationCard>
+        {!isEditing ? (
+          <View style={styles.bottomRow}>
+            <ElevationCard theme={theme} w={"100%"} gradient elevation onPress={startEditing}>
+              <Text style={styles.font22}>Изменить</Text>
+            </ElevationCard>
+          </View>
+        ) : (
+          <View style={styles.buttonContainer}>
+            <View style={styles.topRow}>
+              <View style={{ width: "48%" }}>
+                <ElevationCard theme={theme} w={"100%"} gradient elevation onPress={cancelEditing}>
+                  <Text style={styles.font22}>Отмена</Text>
+                </ElevationCard>
+              </View>
+              <View style={{ width: "48%" }}>
+                <ElevationCard theme={theme} w={"100%"} gradient elevation onPress={handleSave}>
+                  <Text style={styles.font22}>Сохранить</Text>
+                </ElevationCard>
+              </View>
+            </View>
+            <View style={styles.bottomRow}>
+              <ElevationCard theme={theme} w={"100%"} gradient elevation onPress={resetToDefaults}>
+                <Text style={styles.font22}>Вернуть значения по умолчанию</Text>
+              </ElevationCard>
+            </View>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -106,15 +204,28 @@ const styles = ScaledSheet.create({
     width: width,
     alignItems: "center",
     paddingHorizontal: 30,
+    gap: 10,
+  },
+  center: { alignItems: "center", width: "100%", gap: 15 },
+  buttonContainer: {
+    width: "100%",
     gap: 15,
   },
-  center: { alignItems: "center", marginBottom: 30, width: "100%", gap: 15 },
+  topRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    gap: 10,
+  },
+  bottomRow: {
+    width: "100%",
+  },
   font22: {
     color: "white",
     fontFamily: "Podkova-Regular",
     fontSize: scale(22),
     textAlign: "center",
     padding: 10,
-    width: width - 60,
+    width: "100%",
   },
 });

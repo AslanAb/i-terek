@@ -17,6 +17,7 @@ export default function ExtremeInput(props: {
   secondInput?: boolean;
   displayOnlyMax?: boolean;
   normals?: INormals | undefined;
+  disabled?: boolean;
 }) {
   return (
     <View style={{ width: "100%" }}>
@@ -133,6 +134,7 @@ export default function ExtremeInput(props: {
                 secondInput={props.secondInput}
                 formName={props.formName}
                 displayOnlyMax={props.displayOnlyMax}
+                disabled={props.disabled}
               />
             ) : (
               <Input2Card
@@ -145,6 +147,7 @@ export default function ExtremeInput(props: {
                 secondInput={props.secondInput}
                 formName={props.formName}
                 displayOnlyMax={props.displayOnlyMax}
+                disabled={props.disabled}
               />
             )}
           </>

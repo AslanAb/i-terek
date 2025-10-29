@@ -12,6 +12,7 @@ import { useFocusEffect } from "expo-router";
 const { width } = Dimensions.get("window");
 
 export default function VariablesSettings() {
+  console.log("VariablesSettings")
   const [theme, setTheme] = useMMKVString("theme");
   const [weightOfVariables, setWeightOfVariables] =
     useMMKVObject<IWeightOfVariables>("weightOfVariables");
@@ -264,7 +265,6 @@ const styles = ScaledSheet.create({
     alignItems: "center",
     width: "100%",
     gap: 15,
-    marginBottom: verticalScale(0),
   },
   buttonContainer: {
     width: "100%",

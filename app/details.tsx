@@ -9,6 +9,7 @@ import { useState } from "react";
 import { IDetailsText, IWeather } from "@/types";
 
 export default function Details() {
+  console.log("Details")
   const [theme, setTheme] = useMMKVString("theme");
   const [details, setDetails] = useState<IDetailsText>(detailsText[0]);
   const [weather, setWeather] = useMMKVObject<IWeather>("weather");

@@ -16,6 +16,7 @@ export default function NormalInput(props: {
   formName: keyof INormals;
   secondInput?: boolean;
   extremes?: IExtremes | undefined;
+  disabled?: boolean;
 }) {
   return (
     <View style={{ width: "100%" }}>
@@ -119,6 +120,7 @@ export default function NormalInput(props: {
                 h={90}
                 secondInput={props.secondInput}
                 formName={props.formName}
+                disabled={props.disabled}
               />
             ) : (
               <Input2Card
@@ -130,6 +132,7 @@ export default function NormalInput(props: {
                 h={90}
                 secondInput={props.secondInput}
                 formName={props.formName}
+                disabled={props.disabled}
               />
             )}
           </>
