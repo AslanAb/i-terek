@@ -7,37 +7,37 @@ import { scale, verticalScale, ScaledSheet } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
 import VariableInput from "./VariableInput";
 import { useAlert } from "@/hooks/useAlert";
-import { useState, useEffect, useCallback } from "react";
+import CustomAlert from "./CustomAlert";
+import { useState, useEffect, useCallback, useRef, RefObject } from "react";
 import { useFocusEffect } from "expo-router";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 const { width } = Dimensions.get("window");
 
-export default function VariablesSettings() {
-  console.log("VariablesSettings")
+interface VariablesSettingsProps {
+  scrollViewRef?: RefObject<KeyboardAwareScrollView>;
+}
+
+export default function VariablesSettings({ scrollViewRef }: VariablesSettingsProps) {
   const [theme, setTheme] = useMMKVString("theme");
   const [weightOfVariables, setWeightOfVariables] =
     useMMKVObject<IWeightOfVariables>("weightOfVariables");
   const [isEditing, setIsEditing] = useState(false);
   const [originalValues, setOriginalValues] =
     useState<IWeightOfVariables | null>(null);
+  const isResettingRef = useRef(false);
 
-  const { showSuccess, showInfo } = useAlert();
+  const { isVisible, alertConfig, hideAlert, showSuccess, showInfo } = useAlert();
 
   const {
     control,
     setValue,
     handleSubmit,
     reset,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: weightOfVariables,
     mode: "onChange", // Валидация при изменении
   });
-
-  // Для отладки - получаем текущие значения формы
-  const getCurrentFormValues = () => {
-    return watch();
-  };
 
   // Обновляем форму при изменении weightOfVariables
   useEffect(() => {
@@ -50,6 +50,10 @@ export default function VariablesSettings() {
   const startEditing = () => {
     setOriginalValues(weightOfVariables || null);
     setIsEditing(true);
+    // Прокручиваем страницу вниз при входе в режим редактирования
+    setTimeout(() => {
+      scrollViewRef?.current?.scrollToEnd(true);
+    }, 100);
   };
 
   // Выход из режима редактирования без сохранения
@@ -69,24 +73,18 @@ export default function VariablesSettings() {
   };
 
   const onSubmit = (data: any) => {
-    console.log("onSubmit called with data:", data);
-    console.log("Validation errors:", errors);
-    console.log("Current weightOfVariables before save:", weightOfVariables);
-
     try {
       // Сохраняем данные в MMKV
       setWeightOfVariables(data);
-      console.log("Data saved to MMKV successfully");
 
       // Принудительно обновляем форму с новыми данными
       reset(data);
-      console.log("Form reset with new data");
 
       setIsEditing(false);
       setOriginalValues(null);
       showSuccess(
         "Настройки сохранены",
-        "Весовые коэффициенты успешно обновлены"
+        "Вес показателей обновлен"
       );
     } catch (error) {
       console.error("Error saving data:", error);
@@ -94,12 +92,6 @@ export default function VariablesSettings() {
   };
 
   const handleSave = () => {
-    const currentValues = getCurrentFormValues();
-    console.log("handleSave called");
-    console.log("Current form values:", currentValues);
-    console.log("Form errors:", errors);
-    console.log("Has errors:", Object.keys(errors).length > 0);
-
     if (Object.keys(errors).length > 0) {
       console.log("Form has validation errors, cannot save");
       return;
@@ -109,6 +101,7 @@ export default function VariablesSettings() {
   };
 
   const resetToDefaults = () => {
+    isResettingRef.current = true;
     for (const key in defaultVariables) {
       setValue(
         key as keyof IWeightOfVariables,
@@ -118,15 +111,17 @@ export default function VariablesSettings() {
     setWeightOfVariables(defaultVariables);
     setIsEditing(false);
     setOriginalValues(null);
-    showSuccess("Сброшено по умолчанию", "Восстановлены стандартные значения");
+    showSuccess("Изменения сохранены", "Восстановлены стандартные значения");
+    setTimeout(() => {
+      isResettingRef.current = false;
+    }, 100);
   };
 
   // Обработка потери фокуса (пользователь уходит с экрана)
   useFocusEffect(
     useCallback(() => {
       return () => {
-        // Этот колбек вызывается при потере фокуса
-        if (isEditing) {
+        if (isEditing && !isResettingRef.current) {
           cancelEditing();
         }
       };
@@ -250,6 +245,15 @@ export default function VariablesSettings() {
           </View>
         )}
       </View>
+
+      <CustomAlert
+        visible={isVisible}
+        title={alertConfig?.title || ''}
+        message={alertConfig?.message}
+        theme={theme}
+        type={alertConfig?.type}
+        onClose={hideAlert}
+      />
     </View>
   );
 }

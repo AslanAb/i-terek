@@ -15,6 +15,7 @@ export default function Settings() {
   console.log("Settings")
   const [theme, setTheme] = useMMKVString("theme");
   const scrollViewRef = useRef<ScrollView>(null);
+  const keyboardAwareScrollViewRef = useRef<KeyboardAwareScrollView>(null);
   const [pagePosition, setPagePosition] = useState(0);
   const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -58,7 +59,7 @@ export default function Settings() {
           </View>
         ))}
       </View>
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView ref={keyboardAwareScrollViewRef}>
         <ScrollView
           ref={scrollViewRef}
           horizontal
@@ -68,9 +69,9 @@ export default function Settings() {
           scrollEventThrottle={16}
           style={{ paddingBottom: 20 }}
         >
-          <VariablesSettings />
-          <NormalsSettings />
-          <RedSettings />
+          <VariablesSettings scrollViewRef={keyboardAwareScrollViewRef} />
+          <NormalsSettings scrollViewRef={keyboardAwareScrollViewRef} />
+          <RedSettings scrollViewRef={keyboardAwareScrollViewRef} />
         </ScrollView>
       </KeyboardAwareScrollView>
     </SafeAreaView>

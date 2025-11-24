@@ -7,19 +7,26 @@ import { scale, ScaledSheet } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
 import NormalInput from "./NormalInput";
 import { useAlert } from "@/hooks/useAlert";
-import { useState, useEffect, useCallback } from "react";
+import CustomAlert from "./CustomAlert";
+import { useState, useEffect, useCallback, useRef, RefObject } from "react";
 import { useFocusEffect } from "expo-router";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 const { width } = Dimensions.get("window");
 
-export default function NormalsSettings() {
+interface NormalsSettingsProps {
+  scrollViewRef?: RefObject<KeyboardAwareScrollView>;
+}
+
+export default function NormalsSettings({ scrollViewRef }: NormalsSettingsProps) {
   console.log("NormalsSettings");
   const [theme, setTheme] = useMMKVString("theme");
   const [normals, setNormals] = useMMKVObject<INormals>("normals");
   const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
   const [isEditing, setIsEditing] = useState(false);
   const [originalValues, setOriginalValues] = useState<INormals | null>(null);
+  const isResettingNormalsRef = useRef(false);
 
-  const { showSuccess, showInfo } = useAlert();
+  const { isVisible, alertConfig, hideAlert, showSuccess, showInfo } = useAlert();
 
   const {
     control,
@@ -41,6 +48,7 @@ export default function NormalsSettings() {
   const startEditing = () => {
     setOriginalValues(normals || null);
     setIsEditing(true);
+    scrollViewRef?.current?.scrollToEnd(true);
   };
 
   const cancelEditing = () => {
@@ -75,19 +83,23 @@ export default function NormalsSettings() {
   };
 
   const resetToDefaults = () => {
+    isResettingNormalsRef.current = true;
     for (const key in defaultNormals) {
       setValue(key as keyof INormals, defaultNormals[key as keyof INormals]);
     }
     setNormals(defaultNormals);
     setIsEditing(false);
     setOriginalValues(null);
-    showSuccess("Сброшено по умолчанию", "Восстановлены стандартные значения");
+    showSuccess("Изменения сохранены", "Восстановлены стандартные значения");
+    setTimeout(() => {
+      isResettingNormalsRef.current = false;
+    }, 100);
   };
 
   useFocusEffect(
     useCallback(() => {
       return () => {
-        if (isEditing) {
+        if (isEditing && !isResettingNormalsRef.current) {
           cancelEditing();
         }
       };
@@ -195,6 +207,15 @@ export default function NormalsSettings() {
           </View>
         )}
       </View>
+
+      <CustomAlert
+        visible={isVisible}
+        title={alertConfig?.title || ''}
+        message={alertConfig?.message}
+        theme={theme}
+        type={alertConfig?.type}
+        onClose={hideAlert}
+      />
     </View>
   );
 }

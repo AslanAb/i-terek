@@ -7,19 +7,26 @@ import { scale, ScaledSheet } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
 import ExtremeInput from "./ExtremeInput";
 import { useAlert } from "@/hooks/useAlert";
-import { useState, useEffect, useCallback } from "react";
+import CustomAlert from "./CustomAlert";
+import { useState, useEffect, useCallback, useRef, RefObject } from "react";
 import { useFocusEffect } from "expo-router";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 const { width } = Dimensions.get("window");
 
-export default function ExtremesSettings() {
+interface ExtremesSettingsProps {
+  scrollViewRef?: RefObject<KeyboardAwareScrollView>;
+}
+
+export default function ExtremesSettings({ scrollViewRef }: ExtremesSettingsProps) {
   console.log("ExtremesSettings");
   const [theme, setTheme] = useMMKVString("theme");
   const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
   const [normals, setNormals] = useMMKVObject<INormals>("normals");
   const [isEditing, setIsEditing] = useState(false);
   const [originalValues, setOriginalValues] = useState<IExtremes | null>(null);
+  const isResettingExtremesRef = useRef(false);
 
-  const { showSuccess, showInfo } = useAlert();
+  const { isVisible, alertConfig, hideAlert, showSuccess, showInfo } = useAlert();
 
   const {
     control,
@@ -41,6 +48,7 @@ export default function ExtremesSettings() {
   const startEditing = () => {
     setOriginalValues(extremes || null);
     setIsEditing(true);
+    scrollViewRef?.current?.scrollToEnd(true);
   };
 
   const cancelEditing = () => {
@@ -81,6 +89,7 @@ export default function ExtremesSettings() {
   };
 
   const resetToDefaults = () => {
+    isResettingExtremesRef.current = true;
     for (const key in defaultExtremes) {
       setValue(
         key as keyof IExtremes,
@@ -90,13 +99,16 @@ export default function ExtremesSettings() {
     setExtremes(defaultExtremes);
     setIsEditing(false);
     setOriginalValues(null);
-    showSuccess("Сброшено по умолчанию", "Восстановлены стандартные значения");
+    showSuccess("Изменения сохранены", "Восстановлены стандартные значения");
+    setTimeout(() => {
+      isResettingExtremesRef.current = false;
+    }, 100);
   };
 
   useFocusEffect(
     useCallback(() => {
       return () => {
-        if (isEditing) {
+        if (isEditing && !isResettingExtremesRef.current) {
           cancelEditing();
         }
       };
@@ -234,6 +246,15 @@ export default function ExtremesSettings() {
           </View>
         )}
       </View>
+
+      <CustomAlert
+        visible={isVisible}
+        title={alertConfig?.title || ''}
+        message={alertConfig?.message}
+        theme={theme}
+        type={alertConfig?.type}
+        onClose={hideAlert}
+      />
     </View>
   );
 }
