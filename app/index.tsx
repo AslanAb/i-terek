@@ -118,8 +118,8 @@ export default function Home() {
           </Text>
           <Text style={styles.date}>{date}</Text>
         </View>
-        <TouchableOpacity style={styles.wrapper} onPress={() => router.push("/details")}>
-          <ElevationCard theme={theme} transparency={1} gradient>
+        <View style={styles.wrapper}>
+          <ElevationCard h={60} theme={theme} transparency={1} gradient onPress={() => router.push("/details")}>
             <Text style={styles.font22}>
               {theme === "green"
                 ? "Сегодня всё нормально"
@@ -130,7 +130,7 @@ export default function Home() {
                     : ""}
             </Text>
           </ElevationCard>
-        </TouchableOpacity>
+        </View>
       </ScrollView>
 
       <CustomAlert

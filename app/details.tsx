@@ -25,7 +25,7 @@ export default function Details() {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.blur} />
       <View style={styles.titleWrapper}>
-        <ElevationCard theme={theme} mh="100%" w="100%" gradient>
+        <ElevationCard theme={theme} mh="100%" w="100%" gradient h={'fit-content'}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <Text style={styles.font22Bold}>{details.title}</Text>
             <Text style={styles.font16}>{details.description}</Text>

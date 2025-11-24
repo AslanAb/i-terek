@@ -24,6 +24,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.abdishka.iterek",
+      "versionCode": 1,
       "softwareKeyboardLayoutMode": "pan",
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
