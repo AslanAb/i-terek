@@ -2,7 +2,7 @@
   "expo": {
     "name": "iTerek",
     "slug": "i-terek",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -57,9 +57,7 @@
         "projectId": "95be100f-f79d-45de-9e3b-daf38eb2150d"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/95be100f-f79d-45de-9e3b-daf38eb2150d"
     }

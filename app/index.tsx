@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, RefreshControl, ScrollView } from "react-
 import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
-import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { useMMKVNumber, useMMKVObject, useMMKVString } from "@/mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useCallback, useState } from "react";
 import { getDate } from "@/utils";
@@ -71,6 +71,14 @@ export default function Home() {
   }, [weightOfVariables, normals, extremes, weather]);
 
   if (isThemeLoading) {
+    console.log('DEBUG loading flags', {
+      isLocationLoading,
+      isLocationError,
+      isWeatherLoading,
+      isWeatherError,
+      isThemeLoading,
+      isThemeError,
+    });
     return (
       <SafeAreaView style={styles.center}>
         <Spinner

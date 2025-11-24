@@ -2,7 +2,7 @@ import { getCityAndCountry, getCurrentLocation } from "@/services/location";
 import { checkIfSixHoursPassed } from "@/utils";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { useFocusEffect } from "expo-router";
-import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { useMMKVNumber, useMMKVObject, useMMKVString } from "@/mmkv";
 
 const useLocation = () => {
   const [city, setCity] = useMMKVString("city");

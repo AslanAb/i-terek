@@ -3,7 +3,7 @@ import { ScaledSheet, scale } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { detailsText } from "@/constants/text";
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather, FontAwesome6 } from "@expo/vector-icons";
-import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { useMMKVObject, useMMKVString } from "@/mmkv";
 import ElevationCard from "@/components/ElevationCard";
 import { useState } from "react";
 import { IDetailsText, IWeather } from "@/types";

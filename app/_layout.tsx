@@ -3,7 +3,7 @@ import { Stack, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { MMKV, useMMKVString } from "react-native-mmkv";
+import { useMMKVString } from "@/mmkv";
 import BackgroundImage from "@/components/BackgroundImage";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity, ImageBackground } from "react-native";
@@ -11,7 +11,6 @@ export { ErrorBoundary } from "expo-router";
 import mainBg from "@/assets/images/main_bg_2.jpg";
 
 SplashScreen.preventAutoHideAsync();
-export const storage = new MMKV();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({

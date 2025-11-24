@@ -1,5 +1,5 @@
 import { View, Text, Dimensions } from "react-native";
-import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { useMMKVObject, useMMKVString } from "@/mmkv";
 import { IExtremes, INormals } from "@/types";
 import { defaultExtremes } from "@/constants/settings";
 import ElevationCard from "./ElevationCard";
@@ -14,7 +14,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 const { width } = Dimensions.get("window");
 
 interface ExtremesSettingsProps {
-  scrollViewRef?: RefObject<KeyboardAwareScrollView>;
+  scrollViewRef?: RefObject<KeyboardAwareScrollView | null>;
 }
 
 export default function ExtremesSettings({ scrollViewRef }: ExtremesSettingsProps) {

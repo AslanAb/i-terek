@@ -3,7 +3,7 @@ import { IWeather } from "@/types";
 import { checkIfHourPassed } from "@/utils";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useFocusEffect } from "expo-router";
-import { useMMKVObject } from "react-native-mmkv";
+import { useMMKVObject } from "@/mmkv";
 
 const useGetAndSetWeather = (isLocationError: boolean, isLocationLoading: boolean) => {
   const [weather, setWeather] = useMMKVObject<IWeather>("weather");
@@ -56,7 +56,17 @@ const useGetAndSetWeather = (isLocationError: boolean, isLocationLoading: boolea
       setIsWeatherError(true);
       return;
     }
-    if (!isLocationLoading && location  && !isFetchingRef.current) {
+
+    // Если загрузка геолокации закончилась, но координат так и нет,
+    // выходим из "вечного" состояния загрузки с ошибкой.
+    if (!isLocationLoading && !location) {
+      console.warn("Weather: no location data after location loading finished");
+      setIsWeatherLoading(false);
+      setIsWeatherError(true);
+      return;
+    }
+
+    if (!isLocationLoading && location && !isFetchingRef.current) {
       fetchWeatherData();
     }
   }, [isLocationLoading, location, isLocationError]);

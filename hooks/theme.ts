@@ -2,7 +2,7 @@ import { defaultExtremes, defaultNormals, defaultVariables, solarActivityIndexie
 import { IExtremes, INormals, IWeather, IWeightOfVariables } from "@/types";
 import { findClosestIndex } from "@/utils";
 import { useEffect, useState } from "react";
-import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { useMMKVObject, useMMKVString } from "@/mmkv";
 
 const useTheme = (props: { isWeatherLoading: boolean; isWeatherError: boolean }) => {
   const [theme, setTheme] = useMMKVString("theme");

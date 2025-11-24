@@ -1,5 +1,5 @@
 import { Dimensions, View, Text } from "react-native";
-import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { useMMKVObject, useMMKVString } from "@/mmkv";
 import { IWeightOfVariables } from "@/types";
 import { defaultVariables } from "@/constants/settings";
 import ElevationCard from "./ElevationCard";
@@ -14,7 +14,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 const { width } = Dimensions.get("window");
 
 interface VariablesSettingsProps {
-  scrollViewRef?: RefObject<KeyboardAwareScrollView>;
+  scrollViewRef?: RefObject<KeyboardAwareScrollView | null>;
 }
 
 export default function VariablesSettings({ scrollViewRef }: VariablesSettingsProps) {

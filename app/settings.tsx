@@ -8,7 +8,7 @@ import { AntDesign } from "@expo/vector-icons";
 import VariablesSettings from "@/components/VariablesSettings";
 import NormalsSettings from "@/components/NormalsSettings";
 import RedSettings from "@/components/ExtremesSettings";
-import { useMMKVString } from "react-native-mmkv";
+import { useMMKVString } from "@/mmkv";
 const { width, height } = Dimensions.get("window");
 
 export default function Settings() {
