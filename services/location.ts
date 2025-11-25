@@ -4,16 +4,35 @@ import API from "@/api";
 import { countryNameByISOCodes } from "@/utils";
 import { IResult } from "@/types";
 
-const getCurrentLocation = async (): Promise<IResult<{ latitude: number, longitude: number }>> => {
+const getCurrentLocation = async (): Promise<IResult<{ latitude: number, longitude: number; isDefault?: boolean }>> => {
   try {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       return { success: false, error: "Permission to access location was denied" };
     }
-    const currentLocation = await Location.getCurrentPositionAsync({});
+    let currentLocation;
+    try {
+      const locationPromise = Location.getCurrentPositionAsync({});
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Location timeout")), 5000)
+      );
+      
+      currentLocation = await Promise.race([locationPromise, timeoutPromise]) as Location.LocationObject;
+    } catch (e) {
+      console.log("Location error or timeout:", e);
+      currentLocation = undefined;
+    }
 
     if (!currentLocation?.coords) {
-      return { success: false, error: "Can't get current coordinates" };
+      // Fallback to Astana if location is unavailable
+      return {
+        success: true,
+        data: {
+          latitude: 51.126499,
+          longitude: 71.438740,
+          isDefault: true,
+        },
+      };
     }
     console.log('get lat & lon: ', currentLocation.coords.latitude, currentLocation.coords.longitude);
     return {
@@ -21,6 +40,7 @@ const getCurrentLocation = async (): Promise<IResult<{ latitude: number, longitu
       data: {
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
+        isDefault: false,
       }
     };
   } catch (error) {

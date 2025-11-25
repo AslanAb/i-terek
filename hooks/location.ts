@@ -11,6 +11,7 @@ const useLocation = () => {
   const [location, setLocation] = useMMKVObject<{ latitude: number, longitude: number }>("location");
   const [isLocationError, setIsLocationError] = useState(false);
   const [isLocationLoading, setIsLocationLoading] = useState(true);
+  const [isLocationDefault, setIsLocationDefault] = useState(false);
   const isFetchingRef = useRef(false);
 
   useEffect(() => {
@@ -44,6 +45,12 @@ const useLocation = () => {
         throw new Error(locationResult.error);
       }
 
+      if (locationResult.data.isDefault) {
+        setIsLocationDefault(true);
+      } else {
+        setIsLocationDefault(false);
+      }
+
       setLocation(locationResult.data);
 
       const cityAndCountryResult = await getCityAndCountry(locationResult.data.latitude, locationResult.data.longitude);
@@ -64,7 +71,7 @@ const useLocation = () => {
     }
   }, []);
 
-  return { isLocationError, isLocationLoading };
+  return { isLocationError, isLocationLoading, isLocationDefault };
 };
 
 export default useLocation;

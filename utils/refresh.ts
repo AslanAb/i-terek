@@ -12,16 +12,16 @@ export const refreshAll = async (
 ) => {
   try {
     const locationResult = await getCurrentLocation();
-    if (!locationResult.success) {
+    if (!locationResult.success || !locationResult.data) {
       throw new Error(locationResult.error);
     }
 
-    const cityAndCountryResult = await getCityAndCountry(locationResult.data!.latitude, locationResult.data!.longitude);
-    if (!cityAndCountryResult.success) {
+    const cityAndCountryResult = await getCityAndCountry(locationResult.data.latitude, locationResult.data.longitude);
+    if (!cityAndCountryResult.success || !cityAndCountryResult.data) {
       throw new Error(cityAndCountryResult.error);
     }
 
-    const weatherResult = await getWeatherAllIn(locationResult.data!.latitude, locationResult.data!.longitude);
+    const weatherResult = await getWeatherAllIn(locationResult.data.latitude, locationResult.data.longitude);
     if (!weatherResult.success) {
       throw new Error(weatherResult.error);
     }
@@ -30,9 +30,10 @@ export const refreshAll = async (
     return {
       success: true,
       data: {
-        cityAndCountry: cityAndCountryResult.data!,
+        cityAndCountry: cityAndCountryResult.data,
         weatherData: weatherResult.data!,
-        appTheme
+        appTheme,
+        isLocationDefault: locationResult.data.isDefault
       }
     };
   } catch (error) {

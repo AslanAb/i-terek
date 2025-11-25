@@ -4,9 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";
 import { useMMKVNumber, useMMKVObject, useMMKVString } from "@/mmkv";
 import ElevationCard from "@/components/ElevationCard";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { getDate } from "@/utils";
-import Spinner from "react-native-loading-spinner-overlay";
+import CustomLoader from "@/components/CustomLoader";
 import useLocation from "@/hooks/location";
 import useGetAndSetWeather from "@/hooks/weather";
 import useTheme from "@/hooks/theme";
@@ -30,11 +30,17 @@ export default function Home() {
   const [extremes, setExtremes] = useMMKVObject<IExtremes>("extremes");
   const [locationDate, setLocationDate] = useMMKVNumber("locationDate");
 
-  const { isLocationError, isLocationLoading } = useLocation();
+  const { isLocationError, isLocationLoading, isLocationDefault } = useLocation();
   const { isWeatherLoading, isWeatherError } = useGetAndSetWeather(isLocationError, isLocationLoading);
   const { isThemeLoading, isThemeError } = useTheme({ isWeatherLoading, isWeatherError });
 
-  const { isVisible, alertConfig, hideAlert, showSuccess, showError } = useAlert();
+  const { isVisible, alertConfig, hideAlert, showSuccess, showError, showInfo } = useAlert();
+
+  useEffect(() => {
+    if (!isLocationLoading && !isWeatherLoading && !isThemeLoading && isLocationDefault) {
+      showInfo("Геолокация недоступна", "Не удалось определить ваше местоположение. Показана погода в Астане.");
+    }
+  }, [isLocationLoading, isWeatherLoading, isThemeLoading, isLocationDefault]);
 
   useFocusEffect(
     useCallback(() => {
@@ -62,40 +68,39 @@ export default function Home() {
       setLocationDate(new Date().getTime());
       setWeather(refreshedData?.weatherData);
       setTheme(refreshedData?.appTheme)
-      showSuccess("Данные успешно обновлены")
+      
+      if (refreshedData?.isLocationDefault) {
+        showInfo("Геолокация недоступна", "Не удалось определить ваше местоположение. Показана обновленная погода в Астане.");
+      } else {
+        showSuccess("Данные успешно обновлены");
+      }
+      
     } catch (error) {
       console.error('Refresh error:', error);
-      showError("Ошибка при обновлении", "попробуйте снова!")
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
+      if (errorMessage.includes("Network request failed") || errorMessage.includes("axios") || errorMessage.includes("timeout")) {
+        showError("Нет интернета", "Проверьте соединение и попробуйте снова");
+      } else {
+        showError("Ошибка при обновлении", "попробуйте снова!");
+      }
     }
     setRefreshing(false);
   }, [weightOfVariables, normals, extremes, weather]);
 
   if (isThemeLoading) {
-    console.log('DEBUG loading flags', {
-      isLocationLoading,
-      isLocationError,
-      isWeatherLoading,
-      isWeatherError,
-      isThemeLoading,
-      isThemeError,
-    });
     return (
       <SafeAreaView style={styles.center}>
-        <Spinner
-          visible={true}
-          // cancelable
-          // textContent={"Загрузка..."}
-          // textStyle={{ textAlign: "center", color: "white", fontFamily: "Podkova-Regular", fontSize: scale(20) }}
-          size="large"
-        />
+        <CustomLoader />
       </SafeAreaView>
     );
   }
   if (isThemeError) {
     return (
       <SafeAreaView style={styles.center}>
-        <View>
-          <Text style={{ color: "red" }}>Ошибка</Text>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorTitle}>Упс, что-то пошло не так</Text>
+          <Text style={styles.errorText}>Не удалось загрузить данные. Проверьте интернет и перезапустите приложение.</Text>
         </View>
       </SafeAreaView>
     );
@@ -194,5 +199,24 @@ const styles = ScaledSheet.create({
   scroll: {
     width: "100%",
     height: "100%",
+  },
+  errorContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: scale(20),
+    backgroundColor: "rgba(238, 128, 128, 0.5)",
+    marginTop: verticalScale(100),
+  },
+  errorTitle: {
+    fontSize: scale(24),
+    fontFamily: "Podkova-Bold",
+    color: "white",
+    marginBottom: verticalScale(10),
+  },
+  errorText: {
+    fontSize: scale(16),
+    fontFamily: "Podkova-Regular",
+    color: "white",
+    textAlign: "center",
   },
 });
